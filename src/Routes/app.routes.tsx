@@ -6,6 +6,7 @@ import { ForgotPassword } from '../screen/ForgotPassword';
 import { ChangePassword } from '../screen/ChangePassword';
 import { WithdrawNotebook } from '../screen/WithdrawNotebook';
 import { WithdrawConfirm } from '../screen/WithdrawConfirm';
+import { CameraScreen } from '../screen/CameraScreen';
 
 const { Navigator, Screen } = createNativeStackNavigator();
 
@@ -20,6 +21,7 @@ export function AppRoutes(){
             <Screen  name="changePassword" component={ChangePassword}/>
             <Screen  name="withdrawNotebook" component={WithdrawNotebook}/>
             <Screen  name="withdrawConfirm" component={WithdrawConfirm}/>
+            <Screen  name="camera" component={CameraScreen}/>
         </Navigator>
     )
 }
