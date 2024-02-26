@@ -1,4 +1,4 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { Login } from '../screen/Login';
 import { FirstAccess } from '../screen/FirstAccess';
@@ -8,20 +8,12 @@ import { WithdrawNotebook } from '../screen/WithdrawNotebook';
 import { WithdrawConfirm } from '../screen/WithdrawConfirm';
 import { CameraScreen } from '../screen/CameraScreen';
 
-const { Navigator, Screen } = createNativeStackNavigator();
-
-
+const Tab = createBottomTabNavigator();
 
 export function AppRoutes(){
     return (
-        <Navigator screenOptions={{ headerShown: false}} initialRouteName='login'>
-            <Screen  name="login" component={Login}/>
-            <Screen  name="firstAccess" component={FirstAccess}/>
-            <Screen  name="forgotPassword" component={ForgotPassword}/>
-            <Screen  name="changePassword" component={ChangePassword}/>
-            <Screen  name="withdrawNotebook" component={WithdrawNotebook}/>
-            <Screen  name="withdrawConfirm" component={WithdrawConfirm}/>
-            <Screen  name="camera" component={CameraScreen}/>
-        </Navigator>
+        <Tab.Navigator screenOptions={{headerShown: false}}>
+            <Tab.Screen name="Login" component={Login} options={{tabBarStyle: {display: "none"}}}/>
+        </Tab.Navigator>
     )
 }

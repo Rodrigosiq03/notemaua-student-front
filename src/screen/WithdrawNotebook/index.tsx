@@ -13,7 +13,8 @@ export function WithdrawNotebook({ route, navigation }: any) {
     const [isChecked, setIsChecked] = useState(false)
     const [serialNumber, setSerialNumber] = useState('')
 
-    const { serial } = route.params !== undefined ? route.params : '';
+    const { serial } = route.params !== undefined ? route.params : {serial: ''};
+    
     function PostWithdraw() {
         if(serialNumber === '') {
             Toast.show({
@@ -65,7 +66,7 @@ export function WithdrawNotebook({ route, navigation }: any) {
 
                 <Text style={{ marginTop:16, marginBottom:8 }}>Ou</Text>
                 
-                <Button onPress={()=>navigation.navigate('camera')}><Icon name="barcode" size={32} color="#fff"/></Button>
+                <Button onPress={()=>navigation.navigate('cameraScreen')}><Icon name="barcode" size={32} color="#fff"/></Button>
 
                 <CheckBoxContainer>
                     <CheckBox onPress={()=>setIsChecked(!isChecked)}>
