@@ -1,79 +1,82 @@
-import { StyleSheet, Text, Image, View, TextInput, TouchableOpacity } from 'react-native';
-import logoNote from '../../../assets/LogoNote.png';
-import logoMaua from '../../../assets/LogoMaua.png';
+import { Link } from '@react-navigation/native';
+import { Footer } from '../../components/Footer';
+import { Header } from '../../components/Header';
+import { Container, Content, InputLabel, Title, InputContainer, Form, Input, Button, TextButton, LinkText, ContainerLinks } from './styles';
+import Toast from 'react-native-toast-message';
+import { useState } from 'react';
 
-export function Login(){
+
+export function Login({ navigation }: any){
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    
+    function getLogin() {
+        if(email === '') {
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: 'Erro ao efetuar login',
+                text2: 'Preencha o campo de e-mail',
+                visibilityTime: 3000,
+                autoHide: true,
+            });
+            return;
+        }
+        if(password === '') {
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: 'Erro ao efetuar login',
+                text2: 'Preencha o campo de senha',
+                visibilityTime: 3000,
+                autoHide: true,
+            });
+            return;
+        }
+        Toast.show({
+            type: 'success',
+            position: 'top',
+            text1: 'Login efetuado com sucesso!',
+            visibilityTime: 3000,
+            autoHide: true,
+        });
+        setTimeout(() => {
+            navigation.navigate('withdrawNotebook')
+        }, 3000);
+    }
+
     return (
-        <View style={styles.container}>
-            <Image source={logoNote}/>
-            
-            
-            <View style={styles.content}>
-                <Text style={styles.title}>Login</Text>
+        <Container>
+            <Header/>
+            <Toast/>
+
+            <Content>
+                <Title>LOGIN</Title>
                 
-                <View style={{marginBottom: 8}}>
-                    <Text style={styles.subTitle}>E-mail (@maua.br)</Text>
-                    <TextInput style={styles.input}/>
-                </View>
+                <Form>
+                    <InputContainer>
+                        <InputLabel>E-mail (@maua.br)</InputLabel>
+                        <Input onChangeText={setEmail}/>
+                    </InputContainer>
 
-                <View style={{marginBottom: 8}}>
-                    <Text style={styles.subTitle}>Senha</Text>
-                    <TextInput secureTextEntry style={styles.input}/>
-                </View>
+                    <InputContainer>
+                        <InputLabel>Senha</InputLabel>
+                        <Input onChangeText={setPassword} secureTextEntry={true}/>
+                    </InputContainer>
+                </Form>
+                
+                <Button onPress={()=>getLogin()}>
+                    <TextButton>Entrar</TextButton>
+                </Button>
 
-                <TouchableOpacity style={styles.button}>
-                    <Text style={styles.textButton}>Entrar</Text>
-                </TouchableOpacity>
+                <ContainerLinks>
+                    <LinkText>Primeiro acesso? <Link style={{color:"#1669B6", fontWeight:"bold"}} to={{screen: 'firstAccess'}}>Clique Aqui</Link></LinkText>
+                    <LinkText><Link style={{color:"#1669B6", fontWeight:"bold"}} to={{screen: 'forgotPassword'}}>Esqueci minha senha</Link></LinkText>
+                </ContainerLinks>
 
-                <Text style={{textAlign: 'center', marginTop: 12, fontSize:16}}>Primeiro acesso? <Text style={{color: '#1669B6', fontWeight: '600'}}>Clique Aqui</Text> </Text>
-                <Text style={{textAlign: 'center', marginTop: 12, fontWeight: '600', color: '#1669B6'}}>Esqueci a Senha</Text>
-            
-            </View>
+            </Content>
 
-            <Image source={logoMaua}/>
-        </View>
+            <Footer/>
+        </Container>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      margin: 32,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-    },
-    content: {
-        height: '75%',
-        justifyContent: 'center'
-    },
-    title: {
-        fontWeight: 'bold',
-        fontSize: 32,
-        textAlign: 'center',
-        marginBottom: 32
-    },
-    subTitle: {
-        fontSize: 16,
-        marginLeft: 8
-    },
-    input: {
-        backgroundColor:'#D6D6D6',
-        width: 250,
-        padding: 4,
-        borderRadius: 8,
-        fontSize: 16
-    },
-    button: {
-        backgroundColor: '#1669B6',
-        padding: 12,
-        marginTop: 8,
-        borderRadius: 10
-    },
-    textButton: {
-        fontWeight: 'bold',
-        color: '#fff',
-        textAlign: 'center',
-        fontSize: 16
-    }
-  });
-  

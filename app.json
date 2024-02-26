@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "mauanoteapp",
+    "name": "MauaNote",
     "slug": "mauanoteapp",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -21,10 +21,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.titans08.mauanoteapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5f2a4507-2dad-432f-8e35-98867269f169"
+      }
     }
   }
 }
