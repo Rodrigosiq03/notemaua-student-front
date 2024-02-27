@@ -41,7 +41,7 @@ export function Login({ navigation }: any){
             autoHide: true,
         });
         setTimeout(() => {
-            navigation.navigate('withdrawNotebook')
+            navigation.navigate('withdraw')
         }, 3000);
     }
 

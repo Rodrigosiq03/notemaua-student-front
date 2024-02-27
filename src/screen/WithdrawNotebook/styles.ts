@@ -48,7 +48,7 @@ export const Button = styled.TouchableOpacity`
 export const CheckBoxContainer = styled.View`
     margin: 16px 0;
     flex-direction: row;
-    gap:8;
+    gap:8px;
 `;
 
 export const CheckBox = styled.TouchableOpacity`
