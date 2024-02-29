@@ -1,10 +1,10 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from "react-native-vector-icons/FontAwesome5";
 
-import { WithdrawNotebook } from "../screen/WithdrawNotebook";
-import { Account } from "../screen/Account";
+import { WithdrawNotebook } from "../screens/WithdrawNotebook";
+import { Account } from "../screens/Account";
 import { StackRoutes } from "./stack.routes";
-import { ConfigScreen } from "../screen/ConfigScreen";
+import { ConfigScreen } from "../screens/ConfigScreen";
 
 const Tab = createBottomTabNavigator();
 

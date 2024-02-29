@@ -1,6 +1,6 @@
 import { Container, Logo } from "./styles";
 
-import LogoMaua from '../../../assets/LogoMaua.png'
+import LogoMaua from '../../../../assets/LogoMaua.png'
 
 export function Footer() {
     return (

@@ -1,11 +1,11 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import { Login } from "../screen/Login";
-import { FirstAccess } from '../screen/FirstAccess';
-import { ForgotPassword } from '../screen/ForgotPassword';
-import { ChangePassword } from '../screen/ChangePassword';
-import { WithdrawConfirm } from '../screen/WithdrawConfirm';
-import { CameraScreen } from '../screen/CameraScreen';
+import { Login } from "../screens/Login";
+import { FirstAccess } from '../screens/FirstAccess';
+import { ForgotPassword } from '../screens/ForgotPassword';
+import { ChangePassword } from '../screens/ChangePassword';
+import { WithdrawConfirm } from '../screens/WithdrawConfirm';
+import { CameraScreen } from '../screens/CameraScreen';
 
 import { TabRoutes } from "./tab.routes";
 
