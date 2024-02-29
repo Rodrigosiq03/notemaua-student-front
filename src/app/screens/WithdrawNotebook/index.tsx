@@ -13,7 +13,7 @@ export function WithdrawNotebook({ route, navigation }: any) {
     const [isChecked, setIsChecked] = useState(false)
     const [serialNumber, setSerialNumber] = useState('')
 
-    const { serial } = route.params !== undefined ? route.params : {serial: ''};
+    const { serial } = route.params !== undefined ? route.params : '';
     
     function PostWithdraw() {
         if(serialNumber === '') {

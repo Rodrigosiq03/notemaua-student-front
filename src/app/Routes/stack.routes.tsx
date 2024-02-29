@@ -18,7 +18,7 @@ export function StackRoutes() {
             <Stack.Screen name="firstAccess" component={FirstAccess} />
             <Stack.Screen name="forgotPassword" component={ForgotPassword} />
             <Stack.Screen name="changePassword" component={ChangePassword} />
-            <Stack.Screen name="withdrawNotebook" component={TabRoutes} />
+            <Stack.Screen name="withdraw" component={TabRoutes} />
             <Stack.Screen name="withdrawConfirm" component={WithdrawConfirm} />
             <Stack.Screen name="cameraScreen" component={CameraScreen} />
         </Stack.Navigator>        
