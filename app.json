@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "MauaNote",
-    "slug": "mauanoteapp",
+    "slug": "notemaua",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,7 +15,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.titans08.mauanoteapp"
     },
     "android": {
       "adaptiveIcon": {
@@ -29,8 +30,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "5f2a4507-2dad-432f-8e35-98867269f169"
+        "projectId": "855e5bd3-3962-4375-9891-36faae73ab32"
       }
-    }
+    },
+    "owner": "rodbeatz"
   }
 }
