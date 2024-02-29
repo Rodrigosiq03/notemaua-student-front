@@ -26,7 +26,7 @@ export function WithdrawConfirm() {
                 </ContainerText>
 
                 <ContainerLinks>
-                    <LinkText><Link style={{color:"#545454", fontWeight:"500"}} to={{screen: ''}}>Sair </Link><Icon name="sign-out-alt" size={20} color={'#545454'} /></LinkText>
+                    <LinkText><Link style={{color:"#545454", fontWeight:"500"}} to={{screen: 'withdrawNotebook'}}>Sair </Link><Icon name="sign-out-alt" size={20} color={'#545454'} /></LinkText>
                 </ContainerLinks>
             </Content>
 

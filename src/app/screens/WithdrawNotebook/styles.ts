@@ -22,7 +22,6 @@ export const Content = styled.View`
 `;
 
 export const InputContainer = styled.View`
-    gap: 8px;
 `;
 
 export const InputLabel = styled.Text`

@@ -3,15 +3,18 @@ import { Footer } from "../../components/Footer";
 import { Header } from "../../components/Header";
 import { Button, ButtonConfirm, CheckBox, CheckBoxContainer, CheckBoxLabel, Container, Content, Input, InputContainer, InputLabel, Title } from "./styles";
 import Icon from "react-native-vector-icons/FontAwesome5";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ContainerLinks, LinkText } from "../Login/styles";
 import { Link } from "@react-navigation/native";
+
 import Toast from "react-native-toast-message";
 
-export function WithdrawNotebook({ navigation }: any) {
+export function WithdrawNotebook({ route, navigation }: any) {
     const [isChecked, setIsChecked] = useState(false)
     const [serialNumber, setSerialNumber] = useState('')
 
+    const { serial } = route.params !== undefined ? route.params : {serial: ''};
+    
     function PostWithdraw() {
         if(serialNumber === '') {
             Toast.show({
@@ -57,12 +60,13 @@ export function WithdrawNotebook({ navigation }: any) {
 
                 <InputContainer>
                     <InputLabel>Digite/Escaneie o número de série:</InputLabel>
-                    <Input onChangeText={setSerialNumber}/>
+                    <Input value={serial} onChangeText={setSerialNumber}/>
+                    
                 </InputContainer>
 
                 <Text style={{ marginTop:16, marginBottom:8 }}>Ou</Text>
-
-                <Button><Icon name="barcode" size={32} color="#fff"/></Button>
+                
+                <Button onPress={()=>navigation.navigate('cameraScreen')}><Icon name="barcode" size={32} color="#fff"/></Button>
 
                 <CheckBoxContainer>
                     <CheckBox onPress={()=>setIsChecked(!isChecked)}>
