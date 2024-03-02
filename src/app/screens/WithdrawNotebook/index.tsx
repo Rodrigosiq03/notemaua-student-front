@@ -1,4 +1,4 @@
-import { Text } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 import { Footer } from "../../components/Footer";
 import { Header } from "../../components/Header";
 import { Button, ButtonConfirm, CheckBox, CheckBoxContainer, CheckBoxLabel, Container, Content, Input, InputContainer, InputLabel, Title } from "./styles";
@@ -8,6 +8,7 @@ import { ContainerLinks, LinkText } from "../Login/styles";
 import { Link } from "@react-navigation/native";
 
 import Toast from "react-native-toast-message";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function WithdrawNotebook({ route, navigation }: any) {
     const [isChecked, setIsChecked] = useState(false)
@@ -50,6 +51,21 @@ export function WithdrawNotebook({ route, navigation }: any) {
         }, 3000);
     }
 
+    async function Logout() {
+        await AsyncStorage.removeItem('token')
+        navigation.navigate('login')
+    }
+
+    function Verify(){
+        if(AsyncStorage.getItem('token') === null) navigation.navigate('login')
+    }
+
+    useEffect(() => {
+        setInterval(()=>{
+            Verify()
+        }, 5000)
+    }, [])
+
     return (
         <Container>
             <Header/>
@@ -78,7 +94,9 @@ export function WithdrawNotebook({ route, navigation }: any) {
                 <ButtonConfirm onPress={()=>PostWithdraw()}><Text style={{fontWeight:'bold', color:"#fff", fontSize:16}}>Confirmar</Text></ButtonConfirm>
 
                 <ContainerLinks>
-                    <LinkText><Link style={{color:"#545454", fontWeight:"500"}} to={{screen: 'login'}}>Sair </Link><Icon name="sign-out-alt" size={20} color={'#545454'} /></LinkText>
+                <TouchableOpacity onPress={()=>Logout()}>
+                    <LinkText>Sair <Icon name="sign-out-alt" size={20} color={'#545454'} /></LinkText>
+                </TouchableOpacity>
                 </ContainerLinks>
             </Content>
 

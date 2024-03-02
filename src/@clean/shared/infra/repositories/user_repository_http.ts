@@ -47,7 +47,7 @@ export class UserRepositoryHttp implements IUserRepository {
     try {
       const response = await this.httpUser.post<ForgotPasswordResponse>('/forgot-password', { email })
       if (response.status === 200) {
-        localStorage.setItem('createdAt', JSON.stringify(new Date().getTime()))
+        // localStorage.setItem('createdAt', JSON.stringify(new Date().getTime()))
 
         return response.data.message
       }
@@ -56,11 +56,11 @@ export class UserRepositoryHttp implements IUserRepository {
       throw new Error(error)
     }
   }
-  async confirmForgotPassword(email: string, password: string): Promise<string> {
+  async confirmForgotPassword(email: string, password: string, createdAt: Date): Promise<string> {
     try {
-      const createdAt = Number(JSON.parse(localStorage.getItem('createdAt') || ''))
+      // const createdAt = Number(JSON.parse(localStorage.getItem('createdAt') || ''))
       
-      if (createdAt < 0) throw new EntityError('createdAt')
+      if (Number(createdAt) < 0) throw new EntityError('createdAt')
 
       const response = await this.httpUser.post<ConfirmForgotPasswordResponse>('/confirm-forgot-password', { email, password, createdAt })
       if (response.status === 200) {
@@ -73,7 +73,7 @@ export class UserRepositoryHttp implements IUserRepository {
   }
   async updatePassword(ra: string, password: string): Promise<string> {
     try {
-      const response = await this.httpUser.put<UpdatePasswordResponse>('/update-password', { ra, password })
+      const response = await this.httpUser.put<UpdatePasswordResponse>('/update-user?ra='+ra, { password })
       if (response.status === 200) {
         return response.data.message
       }

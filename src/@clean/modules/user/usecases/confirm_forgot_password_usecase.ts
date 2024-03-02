@@ -5,7 +5,7 @@ import { EntityError } from '../../../shared/domain/helpers/errors/domain_errors
 export class ConfirmForgotPasswordUsecase {
   constructor(private repo: IUserRepository) { }
 
-  async execute(email: string, newPassword: string) {
+  async execute(email: string, newPassword: string, createdAt: Date) {
     if (!User.validateEmail(email)) {
       throw new EntityError('email')
     }
@@ -13,7 +13,7 @@ export class ConfirmForgotPasswordUsecase {
       throw new EntityError('newPassword')
     }
 
-    const updatedUser = await this.repo.confirmForgotPassword(email, newPassword)
+    const updatedUser = await this.repo.confirmForgotPassword(email, newPassword, createdAt)
 
     return updatedUser
   }

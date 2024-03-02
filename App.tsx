@@ -6,11 +6,11 @@ import { UserContextProvider } from './src/app/contexts/user_context';
 
 export default function App() {
   return (
-    <UserContextProvider>
-      <SafeAreaView style={{flex:1}}>
+    <SafeAreaView style={{flex:1}}>
+      <UserContextProvider>
         <StatusBar barStyle={'dark-content'} backgroundColor='transparent' translucent />
         <Routes/>
-      </SafeAreaView>
-    </UserContextProvider>
+      </UserContextProvider>
+    </SafeAreaView>
   );
 }

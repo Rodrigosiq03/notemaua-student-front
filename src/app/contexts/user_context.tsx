@@ -13,7 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export type UserContextType = {
   login(email: string, password: string): Promise<string | undefined>
   forgotPassword: (email: string) => Promise<string | undefined>
-  confirmForgotPassword: (email: string, newPassword: string) => Promise<string | undefined>
+  confirmForgotPassword: (email: string, newPassword: string, createdAt: Date) => Promise<string | undefined>
   firstAccess: (ra: string) => Promise<string | undefined>
   updatePassword: (ra: string, newPassword: string) => Promise<string | undefined>
   deleteUser: (ra: string) => Promise<string | undefined>
@@ -62,16 +62,17 @@ export function UserContextProvider({ children }: PropsWithChildren) {
     try {
       const message = await forgotPasswordUsecase.execute(email)
 
+      setError(message)
       return message
     } catch (error: any) {
       console.error('Something went wrong with forgotPassword: ',error)
     }
   }
 
-  async function confirmForgotPassword(email: string, newPassword: string) {
+  async function confirmForgotPassword(email: string, newPassword: string, createdAt: Date) {
     try {
-      const message = await confirmForgotPasswordUsecase.execute(email, newPassword)
-
+      const message = await confirmForgotPasswordUsecase.execute(email, newPassword, createdAt)
+      
       return message
     } catch (error: any) {
       console.error('Something went wrong with confirmForgotPassword: ',error)

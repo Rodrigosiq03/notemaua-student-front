@@ -7,12 +7,13 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useContext, useState } from "react";
 import { UserContext } from "../../contexts/user_context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { TouchableOpacity } from "react-native";
 
-export function ChangePassword({ navigation }: any) {
+export function ChangePassword({ route, navigation }: any) {
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
 
-    const { updatePassword } = useContext(UserContext)
+    const { updatePassword, error } = useContext(UserContext)
 
     async function PutPassword() {
         if(password === '' || confirmPassword === '') {
@@ -38,9 +39,9 @@ export function ChangePassword({ navigation }: any) {
             return;
         }
 
-        const ra = await AsyncStorage.getItem('ra')
-        
-        if(!await updatePassword(String(ra), password)){
+        const ra = route.params.ra
+        const success = await updatePassword(ra, password);
+        if(!success){
             Toast.show({
                 type: 'error',
                 position: 'top',
@@ -58,11 +59,13 @@ export function ChangePassword({ navigation }: any) {
                 visibilityTime: 2000,
                 autoHide: true,
             });
-            AsyncStorage.removeItem('ra')
-            navigation.navigate('login')
+            setTimeout(() => {
+                navigation.navigate('login')
+            }, 2000);
             return;
         }
     }
+
     return (
         <Container>
             <Header/>
@@ -88,7 +91,9 @@ export function ChangePassword({ navigation }: any) {
                 </Button>
 
                 <ContainerLinks>
-                    <LinkText><Link style={{color:"#545454", fontWeight:"500"}} to={{screen: 'firstAccess'}}>Voltar </Link><Icon name="sign-in-alt" size={20} color={'#545454'} /></LinkText>
+                    <TouchableOpacity onPress={()=>navigation.goBack()}>
+                        <LinkText>Voltar<Icon name="sign-in-alt" size={20} color={'#545454'} /></LinkText>
+                    </TouchableOpacity>
                 </ContainerLinks>
             </Content>
 

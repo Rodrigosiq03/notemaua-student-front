@@ -48,7 +48,7 @@ export function FirstAccess({ navigation }: any) {
             });
             await AsyncStorage.setItem('ra', ra)
             setTimeout(() => {
-                navigation.navigate('changePassword')
+                navigation.navigate('changePassword', {ra: ra})
             }, 2000);
         }
     }

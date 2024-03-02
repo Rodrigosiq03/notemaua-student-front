@@ -63,4 +63,6 @@ export const ContainerLinks = styled.View`
 export const LinkText = styled.Text`
     font-size: 20px;
     text-align: center;
+    color: #545454;
+    font-weight: 500;
 `;
