@@ -8,16 +8,18 @@ import { ConfirmForgotPasswordUsecase } from "../../@clean/modules/user/usecases
 import { FirstAccessUsecase } from "../../@clean/modules/user/usecases/first_access_usecase";
 import { UpdatePasswordUsecase } from "../../@clean/modules/user/usecases/update_password_usecase";
 import { DeleteUserUsecase } from "../../@clean/modules/user/usecases/delete_user_usecase";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export type UserContextType = {
   login(email: string, password: string): Promise<string | undefined>
   forgotPassword: (email: string) => Promise<string | undefined>
-  confirmForgotPassword: (email: string, newPassword: string) => Promise<string | undefined>
+  confirmForgotPassword: (email: string, newPassword: string, createdAt: Date) => Promise<string | undefined>
   firstAccess: (ra: string) => Promise<string | undefined>
   updatePassword: (ra: string, newPassword: string) => Promise<string | undefined>
   deleteUser: (ra: string) => Promise<string | undefined>
   isLogged: boolean
   setIsLogged: (isLogged: boolean) => void
+  error: string | undefined
 }
 
 const defaultUserContext: UserContextType = {
@@ -28,10 +30,11 @@ const defaultUserContext: UserContextType = {
   updatePassword: async (ra: string, newPassword: string) => '',
   deleteUser: async (ra: string) => '',
   isLogged: false,
-  setIsLogged: (value: boolean) => {}
+  setIsLogged: (value: boolean) => {},
+  error: undefined
 }
 
-export const UserContext = createContext<UserContextType>(defaultUserContext)
+export const UserContext = createContext(defaultUserContext)
 
 const loginUsecase = containerUser.get<LoginUsecase>(RegistryUser.LoginUsecase)
 const forgotPasswordUsecase = containerUser.get<ForgotPasswordUsecase>(RegistryUser.ForgotPasswordUsecase)
@@ -42,11 +45,12 @@ const deleteUserUsecase = containerUser.get<DeleteUserUsecase>(RegistryUser.Dele
 
 export function UserContextProvider({ children }: PropsWithChildren) {
   const [isLogged, setIsLogged] = useState(false)
+  const [error, setError] = useState('')
 
   async function login(email: string, password: string) {
     try {
       const token = await loginUsecase.execute(email, password)
-      localStorage.setItem('token', token)
+      AsyncStorage.setItem('token', token)
 
       return token
     } catch (error: any) {
@@ -58,16 +62,17 @@ export function UserContextProvider({ children }: PropsWithChildren) {
     try {
       const message = await forgotPasswordUsecase.execute(email)
 
+      setError(message)
       return message
     } catch (error: any) {
       console.error('Something went wrong with forgotPassword: ',error)
     }
   }
 
-  async function confirmForgotPassword(email: string, newPassword: string) {
+  async function confirmForgotPassword(email: string, newPassword: string, createdAt: Date) {
     try {
-      const message = await confirmForgotPasswordUsecase.execute(email, newPassword)
-
+      const message = await confirmForgotPasswordUsecase.execute(email, newPassword, createdAt)
+      
       return message
     } catch (error: any) {
       console.error('Something went wrong with confirmForgotPassword: ',error)
@@ -105,7 +110,7 @@ export function UserContextProvider({ children }: PropsWithChildren) {
   }
 
   return (
-    <UserContext.Provider value={{ login, forgotPassword, confirmForgotPassword, firstAccess, updatePassword, deleteUser, isLogged, setIsLogged }}>
+    <UserContext.Provider value={{ login, forgotPassword, confirmForgotPassword, firstAccess, updatePassword, deleteUser, isLogged, setIsLogged, error }}>
       {children}
     </UserContext.Provider>
   )

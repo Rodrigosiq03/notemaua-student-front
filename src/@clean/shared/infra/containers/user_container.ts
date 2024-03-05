@@ -81,3 +81,12 @@ containerUser.bind(RegistryUser.FirstAccessUsecase).toDynamicValue((context) => 
   }
 })
 
+containerUser.bind(RegistryUser.DeleteUserUsecase).toDynamicValue((context) => {
+  if (process.env.EXPO_PUBLIC_STAGE === STAGE.TEST) {
+    return new FirstAccessUsecase(context.container.get(RegistryUser.UserRepositoryMock))
+  } else if (process.env.EXPO_PUBLIC_STAGE === STAGE.PROD || process.env.EXPO_PUBLIC_STAGE === STAGE.DEV) {
+    return new FirstAccessUsecase(context.container.get(RegistryUser.UserRepositoryHttp))
+  } else {
+    throw new Error('Invalid stage')
+  }
+})

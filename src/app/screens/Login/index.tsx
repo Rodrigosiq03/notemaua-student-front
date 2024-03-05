@@ -3,47 +3,68 @@ import { Footer } from '../../components/Footer';
 import { Header } from '../../components/Header';
 import { Container, Content, InputLabel, Title, InputContainer, Form, Input, Button, TextButton, LinkText, ContainerLinks } from './styles';
 import Toast from 'react-native-toast-message';
-import { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { UserContext } from '../../contexts/user_context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import MaskInput from 'react-native-mask-input';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import { View } from 'react-native';
 
 
 export function Login({ navigation }: any){
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [showPassword, setShowPassword] = useState(true)
     
-    function getLogin() {
-        if(email === '') {
+    const { login, setIsLogged } = useContext(UserContext)
+
+    async function getLogin() {
+        if(email === '' || password === '') {
             Toast.show({
                 type: 'error',
                 position: 'top',
                 text1: 'Erro ao efetuar login',
-                text2: 'Preencha o campo de e-mail',
+                text2: 'Preencha todos os campos',
                 visibilityTime: 3000,
                 autoHide: true,
             });
             return;
         }
-        if(password === '') {
+        await login(email, password)
+        if (await AsyncStorage.getItem('token')) {
+            setIsLogged(true)
+
+            Toast.show({
+                type: 'success',
+                position: 'top',
+                text1: 'Login efetuado com sucesso!',
+                visibilityTime: 2000,
+                autoHide: true,
+            });
+            setTimeout(() => {
+                navigation.navigate('withdraw')
+            }, 2000);
+        }else{
             Toast.show({
                 type: 'error',
                 position: 'top',
                 text1: 'Erro ao efetuar login',
-                text2: 'Preencha o campo de senha',
-                visibilityTime: 3000,
+                text2: 'Usuário ou senha inválidos',
+                visibilityTime: 2000,
                 autoHide: true,
             });
-            return;
         }
-        Toast.show({
-            type: 'success',
-            position: 'top',
-            text1: 'Login efetuado com sucesso!',
-            visibilityTime: 3000,
-            autoHide: true,
-        });
-        setTimeout(() => {
-            navigation.navigate('withdraw')
-        }, 3000);
     }
+
+    useEffect(() => {
+        async function verify() {
+            if(await AsyncStorage.getItem('token')) {
+                navigation.navigate('withdraw')
+            }
+        }
+        setInterval(() => verify(), 5000)
+        verify()
+    }, [])
 
     return (
         <Container>
@@ -56,12 +77,20 @@ export function Login({ navigation }: any){
                 <Form>
                     <InputContainer>
                         <InputLabel>E-mail (@maua.br)</InputLabel>
-                        <Input onChangeText={setEmail}/>
+                        <MaskInput
+                            style={{backgroundColor: '#D6D6D6', width: 300, padding: 8, borderRadius: 10, fontSize: 16}}
+                            value={email}
+                            onChangeText={(masked, unmasked) => {
+                            setEmail(masked);}}
+                            mask={[/\d/, /\d/, '.', /\d/, /\d/, /\d/, /\d/, /\d/, '-', /\d/, '@maua.br']}
+                        />
                     </InputContainer>
 
                     <InputContainer>
                         <InputLabel>Senha</InputLabel>
-                        <Input onChangeText={setPassword} secureTextEntry={true}/>
+                        <View style={{flexDirection:'row', alignItems: 'center'}}>
+                            <Input onChangeText={setPassword} secureTextEntry={showPassword}/>
+                        </View>
                     </InputContainer>
                 </Form>
                 
