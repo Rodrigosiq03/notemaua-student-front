@@ -2,6 +2,8 @@ import { AxiosInstance } from "axios";
 import { IUserRepository } from "../../../modules/user/domain/repositories/user_repository_interface";
 import { decorate, injectable } from "inversify";
 import { EntityError } from "../../domain/helpers/errors/domain_errors";
+import { GetUserJsonProps } from "../../domain/entities/user";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type LoginResponse = {
   token: string
@@ -26,6 +28,14 @@ type UpdatePasswordResponse = {
 
 type DeleteUserResponse = {
   ra: string
+  message: string
+}
+
+type GetUserResponse = {
+  ra: string
+  name: string
+  email: string
+  role: string
   message: string
 }
 
@@ -104,7 +114,35 @@ export class UserRepositoryHttp implements IUserRepository {
       throw new Error(error)
     }
   }
+  async getUser(ra: string): Promise<GetUserJsonProps> {
+    try {
+      const token = await AsyncStorage.getItem('token')
+      const response = await this.httpUser.get<GetUserResponse>(`/get-user?ra=${ra}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
 
+      if (response.status === 200) {
+        return {
+          ra: response.data.ra,
+          name: response.data.name,
+          email: response.data.email,
+          role: response.data.role
+        }
+      }
+
+      return {
+        ra: '',
+        name: '',
+        email: '',
+        role: ''
+      }
+
+    } catch (error: any) {
+      throw new Error(error)
+    }
+  }
 }
 
 decorate(injectable(), UserRepositoryHttp)
