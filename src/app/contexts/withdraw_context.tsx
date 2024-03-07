@@ -6,19 +6,13 @@ import { CreateWithdrawUsecase } from "../../@clean/modules/withdraw/usecases/cr
 import { Withdraw } from "../../@clean/shared/domain/entities/withdraw";
 
 export type WithdrawContextType = {
-  createWithdraw: (notebookSerialNumber: string,
-    studentRA: string,
-    name: string,
-    initTime: number) => Promise<Withdraw | undefined>
+  createWithdraw: (notebookSerialNumber: string) => Promise<Withdraw | undefined>
 
   withdrawCreated: Withdraw | undefined
 }
 
 const defaultWithdrawContext: WithdrawContextType = {
-  createWithdraw: async (notebookSerialNumber: string,
-    studentRA: string,
-    name: string,
-    initTime: number) => undefined,
+  createWithdraw: async (notebookSerialNumber: string) => undefined,
   withdrawCreated: undefined
 }
 
@@ -29,12 +23,9 @@ const createWithdrawUsecase = containerWithdraw.get<CreateWithdrawUsecase>(Regis
 export function WithdrawContextProvider({ children }: PropsWithChildren) {
   const [withdrawCreated, setWithdrawCreated] = useState<Withdraw>()
 
-  async function createWithdraw(notebookSerialNumber: string,
-    studentRA: string,
-    name: string,
-    initTime: number) {
+  async function createWithdraw(notebookSerialNumber: string,) {
     try {
-      const withdraw = await createWithdrawUsecase.execute(notebookSerialNumber, studentRA, name, initTime)
+      const withdraw = await createWithdrawUsecase.execute(notebookSerialNumber)
       setWithdrawCreated(withdraw)
       return withdraw
     } catch (error: any) {

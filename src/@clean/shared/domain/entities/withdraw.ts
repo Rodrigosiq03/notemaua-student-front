@@ -13,6 +13,7 @@ export interface WithdrawProps {
 export interface JsonWithdrawProps {
   notebookSerialNumber: string
   studentRA: string
+  name?: string
   initTime: number
   finishTime?: number
   state: string

@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useContext, useState } from "react";
 import { UserContext } from "../../contexts/user_context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { TouchableOpacity } from "react-native";
+import { Keyboard, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
 
 export function ChangePassword({ route, navigation }: any) {
     const [password, setPassword] = useState('')
@@ -67,6 +67,7 @@ export function ChangePassword({ route, navigation }: any) {
     }
 
     return (
+        <TouchableWithoutFeedback onPress={()=>Keyboard.dismiss()}>
         <Container>
             <Header/>
             <Toast/>
@@ -99,5 +100,6 @@ export function ChangePassword({ route, navigation }: any) {
 
             <Footer/>
         </Container>
+        </TouchableWithoutFeedback>
     )
 }

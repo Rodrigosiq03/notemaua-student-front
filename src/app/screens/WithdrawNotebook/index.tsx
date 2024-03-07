@@ -1,22 +1,23 @@
-import { Text, TouchableOpacity } from "react-native";
+import { Keyboard, Text, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
 import { Footer } from "../../components/Footer";
 import { Header } from "../../components/Header";
 import { Button, ButtonConfirm, CheckBox, CheckBoxContainer, CheckBoxLabel, Container, Content, Input, InputContainer, InputLabel, Title } from "./styles";
 import Icon from "react-native-vector-icons/FontAwesome5";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ContainerLinks, LinkText } from "../Login/styles";
-import { Link } from "@react-navigation/native";
 
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { WithdrawContext } from "../../contexts/withdraw_context";
 
 export function WithdrawNotebook({ route, navigation }: any) {
     const [isChecked, setIsChecked] = useState(false)
     const [serialNumber, setSerialNumber] = useState('')
 
+    const { createWithdraw } = useContext(WithdrawContext)
     const { serial } = route.params !== undefined ? route.params : '';
     
-    function PostWithdraw() {
+    async function PostWithdraw() {
         if(serialNumber === '') {
             Toast.show({
                 type: 'error',
@@ -39,6 +40,8 @@ export function WithdrawNotebook({ route, navigation }: any) {
             });
             return;
         }
+
+        const withdraw = await createWithdraw(serialNumber)
         Toast.show({
             type: 'success',
             position: 'top',
@@ -67,6 +70,7 @@ export function WithdrawNotebook({ route, navigation }: any) {
     }, [])
 
     return (
+        <TouchableWithoutFeedback onPress={()=>Keyboard.dismiss()}>
         <Container>
             <Header/>
             <Toast/>
@@ -102,5 +106,6 @@ export function WithdrawNotebook({ route, navigation }: any) {
 
             <Footer/>
         </Container>
+        </TouchableWithoutFeedback>
     )
 }

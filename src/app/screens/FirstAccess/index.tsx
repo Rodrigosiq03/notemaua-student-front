@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { UserContext } from "../../contexts/user_context";
 import MaskInput from 'react-native-mask-input';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Keyboard, TouchableWithoutFeedback } from "react-native";
 
 export function FirstAccess({ navigation }: any) {
     const [ra, setRa] = useState('')
@@ -54,6 +55,7 @@ export function FirstAccess({ navigation }: any) {
     }
     
     return (
+        <TouchableWithoutFeedback onPress={()=>Keyboard.dismiss()}>
         <Container>
             <Header/>
             <Toast/>
@@ -86,5 +88,6 @@ export function FirstAccess({ navigation }: any) {
 
             <Footer/>
         </Container>
+        </TouchableWithoutFeedback>
     )
 }
