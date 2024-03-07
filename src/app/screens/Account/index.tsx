@@ -1,8 +1,34 @@
-import { View } from "react-native";
+import { Alert, Touchable, TouchableOpacity, View, Text, ActivityIndicator } from "react-native";
 import { Container, ContentInfo, ImageView, TextInfo, TitleInfo } from "./styles";
 import Icon from "react-native-vector-icons/FontAwesome5";
+import { useContext, useEffect, useState } from "react";
+import { UserContext } from "../../contexts/user_context";
+import { useFocusEffect } from "@react-navigation/native";
 
 export function Account() {
+    const { getUser } = useContext(UserContext)
+
+    const [name, setName] = useState('')
+    const [ra, setRa] = useState('')
+    const [email, setEmail] = useState('')
+
+    const fetchData = async () => {
+        try {
+            const user = await getUser();
+            if (user) {
+                setName(user?.name);
+                setRa(user?.ra);
+                setEmail(user?.email);
+            }
+        } catch (error) {
+            console.error('Error fetching user:', error);
+        }
+    };
+
+    useFocusEffect(() => {
+        setTimeout(() => fetchData(), 1000);
+    })
+    
     return (
         <Container>
             <ImageView>
@@ -11,13 +37,15 @@ export function Account() {
 
             <View style={{width:300 , height:1, marginVertical:16, backgroundColor: "#1669B6"}}/>
 
-            <ContentInfo>
-                <TextInfo><TitleInfo>Nome:</TitleInfo> Gabriel Merola</TextInfo>
-                <TextInfo><TitleInfo>RA:</TitleInfo> 23.00825-3</TextInfo>
-                <TextInfo><TitleInfo>Email:</TitleInfo> 23.00825-3@gmail.com</TextInfo>
-            </ContentInfo>
-
-            {/* <Button><TextButton>Deletar Usuário</TextButton></Button> */}
+            {name === '' && ra === '' && email === '' ?
+                <ActivityIndicator size="large" color="#1669B6" />
+                :
+                <ContentInfo>
+                    <TextInfo><TitleInfo>Nome:</TitleInfo>{' '+ name}</TextInfo>
+                    <TextInfo><TitleInfo>RA:</TitleInfo>{' ' + ra}</TextInfo>
+                    <TextInfo><TitleInfo>Email:</TitleInfo>{' ' + email}</TextInfo>
+                </ContentInfo>
+            }
         </Container>
     )
 }

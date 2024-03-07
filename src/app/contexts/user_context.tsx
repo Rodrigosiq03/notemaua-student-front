@@ -9,6 +9,9 @@ import { FirstAccessUsecase } from "../../@clean/modules/user/usecases/first_acc
 import { UpdatePasswordUsecase } from "../../@clean/modules/user/usecases/update_password_usecase";
 import { DeleteUserUsecase } from "../../@clean/modules/user/usecases/delete_user_usecase";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GetUserJsonProps } from "../../@clean/shared/domain/entities/user";
+import { GetUserUsecase } from "../../@clean/modules/user/usecases/get_user_usecase";
+
 
 export type UserContextType = {
   login(email: string, password: string): Promise<string | undefined>
@@ -20,6 +23,7 @@ export type UserContextType = {
   isLogged: boolean
   setIsLogged: (isLogged: boolean) => void
   error: string | undefined
+  getUser: () => Promise<GetUserJsonProps | undefined>
 }
 
 const defaultUserContext: UserContextType = {
@@ -31,7 +35,8 @@ const defaultUserContext: UserContextType = {
   deleteUser: async (ra: string) => '',
   isLogged: false,
   setIsLogged: (value: boolean) => {},
-  error: undefined
+  error: undefined,
+  getUser: async () => undefined
 }
 
 export const UserContext = createContext(defaultUserContext)
@@ -42,6 +47,7 @@ const confirmForgotPasswordUsecase = containerUser.get<ConfirmForgotPasswordUsec
 const firstAccessUsecase = containerUser.get<FirstAccessUsecase>(RegistryUser.FirstAccessUsecase)
 const updatePasswordUsecase = containerUser.get<UpdatePasswordUsecase>(RegistryUser.UodatePasswordUsecase)
 const deleteUserUsecase = containerUser.get<DeleteUserUsecase>(RegistryUser.DeleteUserUsecase)
+const getUserUsecase = containerUser.get<GetUserUsecase>(RegistryUser.GetUserUsecase)
 
 export function UserContextProvider({ children }: PropsWithChildren) {
   const [isLogged, setIsLogged] = useState(false)
@@ -50,6 +56,7 @@ export function UserContextProvider({ children }: PropsWithChildren) {
   async function login(email: string, password: string) {
     try {
       const token = await loginUsecase.execute(email, password)
+      AsyncStorage.setItem('studentRA', email.split('@')[0])
       AsyncStorage.setItem('token', token)
 
       return token
@@ -109,8 +116,32 @@ export function UserContextProvider({ children }: PropsWithChildren) {
     }
   }
 
+  async function getUser() {
+    try {
+      const ra = await AsyncStorage.getItem('studentRA')
+      
+      if (ra) {
+        const user = await getUserUsecase.execute(ra)
+        return user
+      }
+    } catch (error: any) {
+      console.error('Something went wrong with getUser: ',error)
+    }
+  }
+
   return (
-    <UserContext.Provider value={{ login, forgotPassword, confirmForgotPassword, firstAccess, updatePassword, deleteUser, isLogged, setIsLogged, error }}>
+    <UserContext.Provider value={{ 
+      login, 
+      forgotPassword, 
+      confirmForgotPassword, 
+      firstAccess, 
+      updatePassword, 
+      deleteUser, 
+      isLogged, 
+      setIsLogged, 
+      error,
+      getUser
+    }}>
       {children}
     </UserContext.Provider>
   )

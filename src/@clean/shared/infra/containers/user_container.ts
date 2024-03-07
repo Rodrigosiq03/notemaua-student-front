@@ -9,6 +9,7 @@ import { UpdatePasswordUsecase } from '../../../modules/user/usecases/update_pas
 import { ForgotPasswordUsecase } from '../../../modules/user/usecases/forgot_password_usecase'
 import { ConfirmForgotPasswordUsecase } from '../../../modules/user/usecases/confirm_forgot_password_usecase'
 import { FirstAccessUsecase } from '../../../modules/user/usecases/first_access_usecase'
+import { GetUserUsecase } from '../../../modules/user/usecases/get_user_usecase'
 
 export const RegistryUser = {
   AxiosAdapter: Symbol.for('AxiosAdapter'),
@@ -20,6 +21,7 @@ export const RegistryUser = {
   ConfirmForgotPasswordUsecase: Symbol.for('ConfirmPasswordUsecase'),
   FirstAccessUsecase: Symbol.for('FirstAccessUsecase'),
   DeleteUserUsecase: Symbol.for('DeleteUserUsecase'),
+  GetUserUsecase: Symbol.for('GetUserUsecase'),
 }
 
 export const containerUser = new Container()
@@ -86,6 +88,16 @@ containerUser.bind(RegistryUser.DeleteUserUsecase).toDynamicValue((context) => {
     return new FirstAccessUsecase(context.container.get(RegistryUser.UserRepositoryMock))
   } else if (process.env.EXPO_PUBLIC_STAGE === STAGE.PROD || process.env.EXPO_PUBLIC_STAGE === STAGE.DEV) {
     return new FirstAccessUsecase(context.container.get(RegistryUser.UserRepositoryHttp))
+  } else {
+    throw new Error('Invalid stage')
+  }
+})
+
+containerUser.bind(RegistryUser.GetUserUsecase).toDynamicValue((context) => {
+  if (process.env.EXPO_PUBLIC_STAGE === STAGE.TEST) {
+    return new GetUserUsecase(context.container.get(RegistryUser.UserRepositoryMock))
+  } else if (process.env.EXPO_PUBLIC_STAGE === STAGE.PROD || process.env.EXPO_PUBLIC_STAGE === STAGE.DEV) {
+    return new GetUserUsecase(context.container.get(RegistryUser.UserRepositoryHttp))
   } else {
     throw new Error('Invalid stage')
   }

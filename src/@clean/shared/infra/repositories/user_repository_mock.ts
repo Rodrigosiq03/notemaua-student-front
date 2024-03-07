@@ -1,8 +1,9 @@
 import { decorate, injectable } from "inversify";
 import { IUserRepository } from "../../../modules/user/domain/repositories/user_repository_interface";
-import { User } from "../../domain/entities/user";
+import { GetUserJsonProps, User } from "../../domain/entities/user";
 import { EntityError } from "../../domain/helpers/errors/domain_errors";
 import { NoItemsFound } from "../../domain/helpers/errors/usecase_errors";
+import { ROLE } from "../../domain/enums/role_enum";
 
 export class UserRepositoryMock implements IUserRepository {
   private users = [
@@ -26,12 +27,10 @@ export class UserRepositoryMock implements IUserRepository {
 
     return 'email sent'
   }
-  async confirmForgotPassword(email: string, password: string, createdAt: number): Promise<string> {
+  async confirmForgotPassword(email: string, password: string): Promise<string> {
     const user = this.users.find(user => user.email === email)
 
     if (!user) throw new NoItemsFound('email')
-
-    if (createdAt < 0) throw new EntityError('createdAt')
 
     user.setPassword = password
 
@@ -64,7 +63,14 @@ export class UserRepositoryMock implements IUserRepository {
 
     return 'first access done!'
   }
-
+  async getUser(ra: string): Promise<GetUserJsonProps> {
+    return {
+      ra,
+      email: '22.00680-0@maua.br',
+      name: 'Rodrigo',
+      role: ROLE.STUDENT,
+    }
+  }
 }
 
 decorate(injectable(), UserRepositoryMock)

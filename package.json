@@ -19,7 +19,6 @@
     "expo-camera": "~14.0.5",
     "expo-status-bar": "~1.11.1",
     "inversify": "^6.0.2",
-    "jsonwebtoken": "^9.0.2",
     "react": "18.2.0",
     "react-input-mask": "^2.0.4",
     "react-native": "0.73.4",
@@ -35,7 +34,6 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@types/axios": "^0.14.0",
-    "@types/jsonwebtoken": "^9.0.6",
     "@types/react": "~18.2.45",
     "@types/react-input-mask": "^3.0.5",
     "@types/react-native-vector-icons": "^6.4.18",

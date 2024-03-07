@@ -17,6 +17,13 @@ export type JsonProps = {
   password?: string;
 }
 
+export type GetUserJsonProps = {
+  ra: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
 export class User {
   constructor(public props: UserProps) {
     if (!User.validateRa(props.ra as string)) {
