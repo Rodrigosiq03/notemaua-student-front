@@ -9,6 +9,13 @@ import { FirstAccessUsecase } from "../../@clean/modules/user/usecases/first_acc
 import { UpdatePasswordUsecase } from "../../@clean/modules/user/usecases/update_password_usecase";
 import { DeleteUserUsecase } from "../../@clean/modules/user/usecases/delete_user_usecase";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import jwt from 'jsonwebtoken'
+
+export type UserProfileFromToken = {
+  ra: string
+  name: string
+  email: string
+}
 
 export type UserContextType = {
   login(email: string, password: string): Promise<string | undefined>
@@ -20,6 +27,7 @@ export type UserContextType = {
   isLogged: boolean
   setIsLogged: (isLogged: boolean) => void
   error: string | undefined
+  getUserFromToken: () => Promise<UserProfileFromToken | undefined>
 }
 
 const defaultUserContext: UserContextType = {
@@ -31,7 +39,8 @@ const defaultUserContext: UserContextType = {
   deleteUser: async (ra: string) => '',
   isLogged: false,
   setIsLogged: (value: boolean) => {},
-  error: undefined
+  error: undefined,
+  getUserFromToken: async () => undefined
 }
 
 export const UserContext = createContext(defaultUserContext)
@@ -109,8 +118,28 @@ export function UserContextProvider({ children }: PropsWithChildren) {
     }
   }
 
+  async function getUserFromToken() {
+    const token = await AsyncStorage.getItem('token')
+    if (token) {
+      const decoded = jwt.verify(token, process.env.EXPO_PUBLIC_JWT_SECRET) as any
+      const user = JSON.parse(decoded.user) as UserProfileFromToken
+      return user
+    }
+  }
+
   return (
-    <UserContext.Provider value={{ login, forgotPassword, confirmForgotPassword, firstAccess, updatePassword, deleteUser, isLogged, setIsLogged, error }}>
+    <UserContext.Provider value={{ 
+      login, 
+      forgotPassword, 
+      confirmForgotPassword, 
+      firstAccess, 
+      updatePassword, 
+      deleteUser, 
+      isLogged, 
+      setIsLogged, 
+      error,
+      getUserFromToken
+    }}>
       {children}
     </UserContext.Provider>
   )
