@@ -8,7 +8,7 @@ import { UserContext } from '../../contexts/user_context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaskInput from 'react-native-mask-input';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { View } from 'react-native';
+import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
 
 
 export function Login({ navigation }: any){
@@ -67,6 +67,7 @@ export function Login({ navigation }: any){
     }, [])
 
     return (
+        <TouchableWithoutFeedback onPress={()=>Keyboard.dismiss()}>
         <Container>
             <Header/>
             <Toast/>
@@ -107,5 +108,6 @@ export function Login({ navigation }: any){
 
             <Footer/>
         </Container>
+        </TouchableWithoutFeedback>
     )
 }

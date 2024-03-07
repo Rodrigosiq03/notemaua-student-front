@@ -1,6 +1,5 @@
 import { Text, TouchableOpacity, View } from "react-native";
 import { Camera, CameraType } from "expo-camera";
-// import { CameraView, Camera } from "expo-camera/next"
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useState } from "react";
 import { ScannerBar, ScannerContainer } from "./styles";

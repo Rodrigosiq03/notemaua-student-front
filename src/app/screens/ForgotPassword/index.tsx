@@ -7,7 +7,7 @@ import Toast from "react-native-toast-message";
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { UserContext } from "../../contexts/user_context";
 import MaskInput from "react-native-mask-input";
-import { Modal, Text, Touchable, TouchableOpacity, View } from "react-native";
+import { Keyboard, Modal, Text, Touchable, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function ForgotPassword() {
@@ -69,6 +69,7 @@ export function ForgotPassword() {
     }
 
     return (
+        <TouchableWithoutFeedback onPress={()=>Keyboard.dismiss()}>
         <Container>
             <Header/>
             <Toast/>
@@ -87,8 +88,8 @@ export function ForgotPassword() {
                             style={{backgroundColor: '#D6D6D6', width: 300, padding: 8, borderRadius: 10, fontSize: 16}}
                             value={email}
                             onChangeText={(masked, unmasked) => {
-                            setEmail(masked);}}
-                            mask={[/\d/, /\d/, '.', /\d/, /\d/, /\d/, /\d/, /\d/, '-', /\d/, '@maua.br']}
+                                setEmail(masked);}}
+                                mask={[/\d/, /\d/, '.', /\d/, /\d/, /\d/, /\d/, /\d/, '-', /\d/, '@maua.br']}
                         />
                     </InputContainer>
                 </Form>
@@ -131,5 +132,6 @@ export function ForgotPassword() {
                 <></>
             }
         </Container>
+        </TouchableWithoutFeedback>
     )
 }
