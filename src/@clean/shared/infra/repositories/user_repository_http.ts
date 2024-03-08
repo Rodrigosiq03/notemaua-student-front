@@ -83,7 +83,13 @@ export class UserRepositoryHttp implements IUserRepository {
   }
   async updatePassword(ra: string, password: string): Promise<string> {
     try {
-      const response = await this.httpUser.put<UpdatePasswordResponse>('/update-user?ra='+ra, { password })
+      const token = await AsyncStorage.getItem('token')
+      const response = await this.httpUser.put<UpdatePasswordResponse>('/update-user?ra='+ra, { password },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
       if (response.status === 200) {
         return response.data.message
       }

@@ -108,9 +108,11 @@ export function UserContextProvider({ children }: PropsWithChildren) {
 
   async function deleteUser(ra: string) {
     try {
-      const message = await deleteUserUsecase.execute(ra)
-
-      return message
+      const ra = await AsyncStorage.getItem('studentRA')
+      if(ra){
+        const message = await deleteUserUsecase.execute(ra)
+        return message
+      }
     } catch (error: any) {
       console.error('Something went wrong with deleteUser: ',error)
     }

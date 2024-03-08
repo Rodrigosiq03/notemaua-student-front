@@ -4,9 +4,31 @@ import { Header } from "../../components/Header";
 import { Footer } from "../../components/Footer";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { ContainerLinks, LinkText } from "../Login/styles";
-import { Link } from "@react-navigation/native";
+import { Link, useFocusEffect } from "@react-navigation/native";
+import { useContext, useState } from "react";
+import { WithdrawContext } from "../../contexts/withdraw_context";
 
 export function WithdrawConfirm() {
+    const [initTime, setInitTime] = useState('')
+    const [name, setName] = useState('')
+    const [ra, setRa] = useState('')
+
+    const { withdrawCreated } = useContext(WithdrawContext)
+
+    useFocusEffect(() => {
+        if(withdrawCreated !== undefined) {
+            if (withdrawCreated.initTime !== undefined) {
+                const dataFormat = new Date(withdrawCreated.initTime).getHours() + ':' + new Date(withdrawCreated.initTime).getMinutes();
+                setInitTime(dataFormat);
+            }
+            if (withdrawCreated.name !== undefined) {
+                setName(withdrawCreated.name);
+            }
+            if (withdrawCreated.studentRA !== undefined) {
+                setRa(withdrawCreated.studentRA);
+            }
+        }
+    })
     return (
         <Container>
             <Header/>
@@ -19,10 +41,9 @@ export function WithdrawConfirm() {
                 </CircleCheck>
 
                 <ContainerText>
-                    <Text>Horário da Retirada: <Text style={{fontWeight: 'bold'}}>07:40</Text></Text>
-                    <Text>Luigi Guimarães Trevisan</Text>
-                    <Text>22.01102-0@maua.br</Text>
-                    <Text>RA: <Text style={{fontWeight: 'bold'}}>22.01102</Text></Text>
+                    <Text>Horário da Retirada: <Text style={{fontWeight: 'bold'}}>{initTime}</Text></Text>
+                    <Text>{name}</Text>
+                    <Text>RA: <Text style={{fontWeight: 'bold'}}>{ra}</Text></Text>
                 </ContainerText>
 
                 <ContainerLinks>

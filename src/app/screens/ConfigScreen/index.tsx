@@ -23,10 +23,14 @@ export function ConfigScreen({ navigation }:any) {
                 },
                 {
                     text: 'Deletar',
-                    onPress: () => {
+                    onPress: async () => {
                         AsyncStorage.removeItem('token')
-                        // await deleteUser()
-                        navigation.navigate('login')
+                        const message = await deleteUser('')
+                        if(message){
+                            navigation.navigate('login')
+                        }else{
+                            Alert.alert('Erro', 'Não foi possível deletar a conta')
+                        }
                     }
                 }
             ]
