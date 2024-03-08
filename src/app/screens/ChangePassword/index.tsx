@@ -2,18 +2,19 @@ import Toast from "react-native-toast-message";
 import { Header } from "../../components/Header";
 import { Container, Content, Form, Input, InputContainer, InputLabel, TextButton, Title, Button, ContainerLinks, LinkText } from "./styles";
 import { Footer } from "../../components/Footer";
-import { Link } from "@react-navigation/native";
+import { Link, useNavigation } from "@react-navigation/native";
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useContext, useState } from "react";
 import { UserContext } from "../../contexts/user_context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Keyboard, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
 
-export function ChangePassword({ route, navigation }: any) {
+export function ChangePassword() {
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
 
     const { updatePassword, error } = useContext(UserContext)
+    const navigate = useNavigation()
 
     async function PutPassword() {
         if(password === '' || confirmPassword === '') {
@@ -60,7 +61,7 @@ export function ChangePassword({ route, navigation }: any) {
                 autoHide: true,
             });
             setTimeout(() => {
-                navigation.navigate('login')
+                navigate.goBack()
             }, 2000);
             return;
         }
@@ -92,7 +93,7 @@ export function ChangePassword({ route, navigation }: any) {
                 </Button>
 
                 <ContainerLinks>
-                    <TouchableOpacity onPress={()=>navigation.goBack()}>
+                    <TouchableOpacity onPress={()=>navigate.goBack()}>
                         <LinkText>Voltar<Icon name="sign-in-alt" size={20} color={'#545454'} /></LinkText>
                     </TouchableOpacity>
                 </ContainerLinks>

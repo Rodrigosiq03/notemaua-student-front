@@ -1,4 +1,4 @@
-import { Link } from '@react-navigation/native';
+import { Link, useNavigation } from '@react-navigation/native';
 import { Footer } from '../../components/Footer';
 import { Header } from '../../components/Header';
 import { Container, Content, InputLabel, Title, InputContainer, Form, Input, Button, TextButton, LinkText, ContainerLinks } from './styles';
@@ -11,12 +11,13 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
 
 
-export function Login({ navigation }: any){
+export function Login(){
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [showPassword, setShowPassword] = useState(true)
     
     const { login, setIsLogged } = useContext(UserContext)
+    const navigate = useNavigation()
 
     async function getLogin() {
         if(email === '' || password === '') {
@@ -42,7 +43,7 @@ export function Login({ navigation }: any){
                 autoHide: true,
             });
             setTimeout(() => {
-                navigation.navigate('withdraw')
+                navigate.navigate('withdraw')
             }, 2000);
         }else{
             Toast.show({
@@ -59,7 +60,7 @@ export function Login({ navigation }: any){
     useEffect(() => {
         async function verify() {
             if(await AsyncStorage.getItem('token')) {
-                navigation.navigate('withdraw')
+                navigate.navigate('withdraw')
             }
         }
         setInterval(() => verify(), 5000)

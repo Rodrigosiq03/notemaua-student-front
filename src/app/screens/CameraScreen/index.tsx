@@ -4,10 +4,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useState } from "react";
 import { BackContainer, ScannerBar, ScannerContainer } from "./styles";
 import Icon from "react-native-vector-icons/FontAwesome5";
+import { useNavigation } from "@react-navigation/native";
 
-export function CameraScreen({ navigation }: any){
+export function CameraScreen(){
     const [hasPermission, setHasPermission] = useState(false)
-    // const [scanned, setScanned] = useState(false)
+    const navigate = useNavigation()
 
     useEffect(() => {
         const getCameraPermissions = async () => {
@@ -18,11 +19,9 @@ export function CameraScreen({ navigation }: any){
         getCameraPermissions();
     }, [])
 
-    const handleBarCodeScanned = ({ data }: any) => {
-        // setScanned(true);
-        navigation.navigate({name: 'withdrawNotebook', params: {serial: data}})
-        // alert(data)
-    };
+    // const handleBarCodeScanned = ({ data }: any) => {
+    //     navigate.navigate({name: 'withdrawNotebook', params: {serial: data}})
+    // };
 
     if (hasPermission === null) {
         return <Text>Requesting for camera permission</Text>;
@@ -33,9 +32,9 @@ export function CameraScreen({ navigation }: any){
 
     return (
         <SafeAreaView style={{flex:1, justifyContent:'center'}}>
-            <Camera style={{flex:1, justifyContent: 'center', alignItems: 'center'}} type={CameraType.back} onBarCodeScanned={handleBarCodeScanned}>
+            <Camera style={{flex:1, justifyContent: 'center', alignItems: 'center'}} type={CameraType.back} onBarCodeScanned={()=>{}}>
                 <BackContainer>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={{padding: 20}}>
+                    <TouchableOpacity onPress={() => navigate.goBack()} style={{padding: 20}}>
                         <Text style={{color: '#fff', fontSize: 20}}><Icon name="arrow-right" size={20}/></Text>
                     </TouchableOpacity>
                 </BackContainer>
