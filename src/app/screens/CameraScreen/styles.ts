@@ -13,3 +13,10 @@ export const ScannerBar = styled.View`
     height: 1px;
     border: .5px dashed red;
 `;
+
+export const BackContainer = styled.View`
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1;
+`;

@@ -1,3 +1,4 @@
+import { Platform } from "react-native";
 import styled from "styled-components/native";
 
 export const Container = styled.View`
@@ -5,7 +6,7 @@ export const Container = styled.View`
   background-color: #fff;
   padding: 16px;
   align-items: center;
-  margin-top: 40px;
+  ${Platform.OS === 'ios' ? 'padding-top: 40px;' : ''}
 `;
 
 export const Title = styled.Text`

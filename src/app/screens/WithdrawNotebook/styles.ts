@@ -48,6 +48,8 @@ export const Button = styled.TouchableOpacity`
 export const CheckBoxContainer = styled.View`
     margin: 16px 0;
     flex-direction: row;
+    align-items: center;
+    justify-content: center;
     gap:8px;
 `;
 
@@ -55,9 +57,10 @@ export const CheckBox = styled.TouchableOpacity`
     border: 1px solid #000;
 `; 
 
-export const CheckBoxLabel = styled.Text`
+export const CheckBoxLabel = styled.TouchableOpacity`
     color: #1669B6;
     font-weight: 600;
+    text-align: center;
 `;
 
 export const ButtonConfirm = styled.TouchableOpacity`

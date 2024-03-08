@@ -16,7 +16,7 @@ export class WithdrawRepositoryMock implements IWithdrawRepository {
     }),
   ]
 
-  async createWithdraw(notebookSerialNumber: string): Promise<Withdraw> {
+  async createWithdraw(notebookSerialNumber: string): Promise<Withdraw | undefined> {
      const existingWithdraw = this.inactiveWithdraws.find(
       (w) => w.notebookSerialNumber === notebookSerialNumber,
     )

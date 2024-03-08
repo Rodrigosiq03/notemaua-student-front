@@ -2,7 +2,8 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useState } from "react";
-import { ScannerBar, ScannerContainer } from "./styles";
+import { BackContainer, ScannerBar, ScannerContainer } from "./styles";
+import Icon from "react-native-vector-icons/FontAwesome5";
 
 export function CameraScreen({ navigation }: any){
     const [hasPermission, setHasPermission] = useState(false)
@@ -33,6 +34,11 @@ export function CameraScreen({ navigation }: any){
     return (
         <SafeAreaView style={{flex:1, justifyContent:'center'}}>
             <Camera style={{flex:1, justifyContent: 'center', alignItems: 'center'}} type={CameraType.back} onBarCodeScanned={handleBarCodeScanned}>
+                <BackContainer>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={{padding: 20}}>
+                        <Text style={{color: '#fff', fontSize: 20}}><Icon name="arrow-right" size={20}/></Text>
+                    </TouchableOpacity>
+                </BackContainer>
                 <ScannerContainer>
                     <ScannerBar/>
                 </ScannerContainer>

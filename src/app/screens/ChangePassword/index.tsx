@@ -39,8 +39,8 @@ export function ChangePassword({ route, navigation }: any) {
             return;
         }
 
-        const ra = route.params.ra
-        const success = await updatePassword(ra, password);
+        const ra = await AsyncStorage.getItem('ra');
+        const success = await updatePassword(String(ra), password);
         if(!success){
             Toast.show({
                 type: 'error',

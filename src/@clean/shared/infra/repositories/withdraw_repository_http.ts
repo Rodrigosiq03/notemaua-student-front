@@ -3,21 +3,28 @@ import { IWithdrawRepository } from "../../../modules/withdraw/domain/repositori
 import { JsonWithdrawProps, Withdraw } from "../../domain/entities/withdraw";
 import { decorate, injectable } from "inversify";
 import { STATE } from "../../domain/enums/state_enum";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export class WithdrawRepositoryHttp implements IWithdrawRepository {
   constructor(private readonly httpWithdraw: AxiosInstance) {}
 
-  async createWithdraw(notebookSerialNumber: string): Promise<Withdraw> {
+  async createWithdraw(notebookSerialNumber: string): Promise<Withdraw | undefined> {
     try {
-      const response = await this.httpWithdraw.post<Withdraw>('/create-withdraw', {
-        notebookSerialNumber
-      })
-
-      if (response.status === 200) {
+      const token = await AsyncStorage.getItem('token')
+      const response = await this.httpWithdraw.post<Withdraw | undefined>('/create-withdraw', {
+          notebookSerialNumber,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      )
+      if (response.status === 201) {
         return response.data
+      }else{
+        return undefined
       }
-
-      throw new Error('Error creating withdraw')
     } catch (error: any) {
       throw new Error(error)
     }
