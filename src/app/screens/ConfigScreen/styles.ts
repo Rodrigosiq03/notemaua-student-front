@@ -6,7 +6,7 @@ export const Container = styled.View`
   background-color: #fff;
   padding: 16px;
   align-items: center;
-  ${Platform.OS === 'ios' ? 'padding-top: 40px;' : ''}
+  ${Platform.OS === 'ios' ? 'padding-top: 56px;' : ''}
 `;
 
 export const Title = styled.Text`

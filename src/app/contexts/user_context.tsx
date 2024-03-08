@@ -16,7 +16,7 @@ import { GetUserUsecase } from "../../@clean/modules/user/usecases/get_user_usec
 export type UserContextType = {
   login(email: string, password: string): Promise<string | undefined>
   forgotPassword: (email: string) => Promise<string | undefined>
-  confirmForgotPassword: (email: string, newPassword: string, createdAt: Date) => Promise<string | undefined>
+  confirmForgotPassword: (email: string, newPassword: string) => Promise<string | undefined>
   firstAccess: (ra: string) => Promise<string | undefined>
   updatePassword: (ra: string, newPassword: string) => Promise<string | undefined>
   deleteUser: (ra: string) => Promise<string | undefined>
@@ -76,12 +76,13 @@ export function UserContextProvider({ children }: PropsWithChildren) {
     }
   }
 
-  async function confirmForgotPassword(email: string, newPassword: string, createdAt: Date) {
+  async function confirmForgotPassword(email: string, newPassword: string) {
     try {
-      const message = await confirmForgotPasswordUsecase.execute(email, newPassword, createdAt)
+      const message = await confirmForgotPasswordUsecase.execute(email, newPassword)
       
       return message
     } catch (error: any) {
+      setError(error.message)
       console.error('Something went wrong with confirmForgotPassword: ',error)
     }
   }
