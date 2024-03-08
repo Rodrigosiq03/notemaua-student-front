@@ -17,6 +17,7 @@ export function Login(){
     const navigation = useNavigation()
     
     const { login, setIsLogged } = useContext(UserContext)
+    const navigate = useNavigation()
 
     async function getLogin() {
         if(email === '' || password === '') {
@@ -42,7 +43,7 @@ export function Login(){
                 autoHide: true,
             });
             setTimeout(() => {
-                navigation.navigate('withdraw')
+                navigate.navigate('withdraw')
             }, 2000);
         }else{
             Toast.show({
@@ -59,7 +60,7 @@ export function Login(){
     useEffect(() => {
         async function verify() {
             if(await AsyncStorage.getItem('token')) {
-                navigation.navigate('withdraw')
+                navigate.navigate('withdraw')
             }
         }
         setInterval(() => verify(), 5000)

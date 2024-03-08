@@ -1,4 +1,4 @@
-import { Link } from "@react-navigation/native";
+import { Link, useNavigation } from "@react-navigation/native";
 import { Footer } from "../../components/Footer";
 import { Header } from "../../components/Header";
 import { Button, Container, ContainerLinks, Content, FirstAccessText, Form, Input, InputContainer, InputLabel, TextButton, Title } from "./styles";
@@ -10,10 +10,11 @@ import MaskInput from 'react-native-mask-input';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
 
-export function FirstAccess({ navigation }: any) {
+export function FirstAccess() {
     const [ra, setRa] = useState('')
 
     const { firstAccess } = useContext(UserContext)
+    const navigate = useNavigation()
 
     async function PostFirstAccess() {
         if(ra === '') {
@@ -49,7 +50,7 @@ export function FirstAccess({ navigation }: any) {
             });
             await AsyncStorage.setItem('ra', ra)
             setTimeout(() => {
-                navigation.navigate('changePassword', {ra: ra})
+                navigate.navigate('changePassword')
             }, 2000);
         }
     }
