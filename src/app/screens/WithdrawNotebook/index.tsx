@@ -1,4 +1,4 @@
-import { Keyboard, Modal, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+import { ActivityIndicator, Keyboard, Modal, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import { Footer } from "../../components/Footer";
 import { Header } from "../../components/Header";
 import { Button, ButtonConfirm, CheckBox, CheckBoxContainer, CheckBoxLabel, Container, Content, Input, InputContainer, InputLabel, Title } from "./styles";
@@ -10,7 +10,6 @@ import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { WithdrawContext } from "../../contexts/withdraw_context";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { Withdraw } from "../../../@clean/shared/domain/entities/withdraw";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Camera, CameraType } from "expo-camera";
 import { BackContainer, ScannerBar, ScannerContainer } from "../CameraScreen/styles";
@@ -21,6 +20,7 @@ export function WithdrawNotebook() {
     const [isChecked, setIsChecked] = useState(false)
     const [serialNumber, setSerialNumber] = useState('')
     const [modal, setModal] = useState(false)
+    const [loading, setLoading] = useState(false)
     const navigate = useNavigation()
 
     const { createWithdraw } = useContext(WithdrawContext)
@@ -31,6 +31,7 @@ export function WithdrawNotebook() {
     };
 
     async function PostWithdraw() {
+        setLoading(true)
         if(serialNumber === '') {
             Toast.show({
                 type: 'error',
@@ -40,6 +41,7 @@ export function WithdrawNotebook() {
                 visibilityTime: 3000,
                 autoHide: true,
             });
+            setLoading(false)
             return;
         }
         if(!isChecked) {
@@ -51,6 +53,7 @@ export function WithdrawNotebook() {
                 visibilityTime: 3000,
                 autoHide: true,
             });
+            setLoading(false)
             return;
         }
         const withdraw = await createWithdraw(serialNumber)
@@ -63,6 +66,7 @@ export function WithdrawNotebook() {
                 autoHide: true,
             });
             setTimeout(() => {
+                setLoading(false)
                 navigate.navigate('withdrawConfirm')
             }, 3000);
         }else{
@@ -74,6 +78,7 @@ export function WithdrawNotebook() {
                 visibilityTime: 3000,
                 autoHide: true,
             });
+            setLoading(false)
         }
     }
 
@@ -116,10 +121,16 @@ export function WithdrawNotebook() {
                     <CheckBox onPress={()=>setIsChecked(!isChecked)}>
                         {isChecked ? <Icon name="check" size={16}/> : <Icon name="check" size={16} color="#fff"/>}
                     </CheckBox>
-                    <Text>Concordo com os <CheckBoxLabel onPress={()=>setModal(true)}><Text style={{color: '#1669B6'}}>termos de uso</Text></CheckBoxLabel></Text>
+                    <CheckBoxLabel onPress={()=>setModal(true)}><Text>Concordo com os <Text style={{color: '#1669B6'}}>termos de uso</Text></Text></CheckBoxLabel>
                 </CheckBoxContainer>
 
-                <ButtonConfirm onPress={()=>PostWithdraw()}><Text style={{fontWeight:'bold', color:"#fff", fontSize:16}}>Confirmar</Text></ButtonConfirm>
+                <ButtonConfirm onPress={()=>PostWithdraw()}>
+                {loading ?
+                    <ActivityIndicator size="large" color="#fff" />
+                    :
+                    <Text style={{fontWeight:'bold', color:"#fff", fontSize:16}}>Confirmar</Text>
+                }
+                </ButtonConfirm>
 
                 <ContainerLinks>
                 <TouchableOpacity onPress={()=>Logout()}>
@@ -181,6 +192,7 @@ export function WithdrawNotebook() {
             :
             <></>
         }
+
         {cameraModal ?
             <Modal>
                 <SafeAreaView style={{flex:1, justifyContent:'center'}}>

@@ -18,6 +18,9 @@ export function ForgotPassword() {
     const [code, setCode] = useState('')
     const [newPassword, setNewPassword] = useState('')
     const [confirmNewPassword, setConfirmNewPassword] = useState('')
+    const [showGuide, setShowGuide] = useState(false)
+    const [showPassword, setShowPassword] = useState(true)
+    const [showConfirmPassword, setShowConfirmPassword] = useState(true)
 
     async function sendEmail() {
         if(email === '') {
@@ -31,7 +34,7 @@ export function ForgotPassword() {
             });
             return;
         }
-        const msg = await forgotPassword(email)
+        const msg = await forgotPassword(`${email}@maua.br`)
         if(msg === undefined) {
             Toast.show({
                 type: 'error',
@@ -140,13 +143,13 @@ export function ForgotPassword() {
 
                 <Form>
                     <InputContainer>
-                        <InputLabel>E-mail (@maua.br)</InputLabel>
+                        <InputLabel>Ra do aluno</InputLabel>
                         <MaskInput
-                            style={{backgroundColor: '#D6D6D6', width: 300, padding: 8, borderRadius: 10, fontSize: 16}}
+                            style={{backgroundColor: '#D6D6D6', width: 300, padding: 8, borderRadius: 10, fontSize: 16, textAlign: 'center'}}
                             value={email}
                             onChangeText={(masked, unmasked) => {
                                 setEmail(masked);}}
-                                mask={[/\d/, /\d/, '.', /\d/, /\d/, /\d/, /\d/, /\d/, '-', /\d/, '@maua.br']}
+                                mask={[/\d/, /\d/, '.', /\d/, /\d/, /\d/, /\d/, /\d/, '-', /\d/]}
                         />
                     </InputContainer>
                 </Form>
@@ -173,7 +176,7 @@ export function ForgotPassword() {
                     <TouchableWithoutFeedback onPress={()=>Keyboard.dismiss()}>
                     <View style={{justifyContent:'center', marginTop:16, alignItems: 'center'}}>
                         <Text style={{textAlign: 'center', fontSize: 32, fontWeight: 'bold'}}>Código de Verificação</Text>
-                        <Text style={{textAlign: 'center', fontSize: 20, color: '#545454'}}>E-mail enviado com sucesso!</Text>
+                        <Text style={{textAlign: 'center', fontSize: 20, fontWeight: '500', color: 'green'}}>E-mail enviado com sucesso!</Text>
                         <Text style={{textAlign: 'center', fontSize: 16, color: '#545454'}}>Verifique sua caixa de entrada.</Text>
                         <Text style={{textAlign: 'center', fontSize: 16, color: '#545454'}}>Não se esqueça de olhar o lixo eletrônico.</Text>
 
@@ -182,17 +185,33 @@ export function ForgotPassword() {
                             <Input onChangeText={setCode} style={{backgroundColor: '#D6D6D6', width: 300, padding: 8, borderRadius: 10, fontSize: 16}}/>
                         </InputContainer>
                         <InputContainer style={{marginTop: 16}}>
-                            <View>
+                            <View style={{flexDirection:'row'}}>
                                 <InputLabel>Nova senha</InputLabel>
-                                <IconGuideButton>
+                                <IconGuideButton onPress={()=>setShowGuide(!showGuide)}>
+                                    {showGuide ?
+                                    <Icon name="times-circle" size={20} color={'#545454'} />
+                                    :
                                     <Icon name="question-circle" size={20} color={'#545454'} />
+                                }
                                 </IconGuideButton>
                             </View>
-                            <Input onChangeText={setNewPassword} style={{backgroundColor: '#D6D6D6', width: 300, padding: 8, borderRadius: 10, fontSize: 16}}/>
+                            <View style={{display:`${showGuide ? 'flex' : 'none'}`, backgroundColor:'#1669B6', padding:8, borderRadius:15}}>
+                                <Text style={{fontSize: 16, color: '#fff'}}>Deve conter no mínimo 8 caracteres.</Text>
+                                <Text style={{fontSize: 16, color: '#fff'}}>Deve conter caracter especial.</Text>
+                                <Text style={{fontSize: 16, color: '#fff'}}>Deve conter letra maiúscula.</Text>
+                                <Text style={{fontSize: 16, color: '#fff'}}>Deve conter número.</Text>
+                            </View>
+                            <View style={{flexDirection:'row', alignItems: 'center'}}>
+                                <Input onChangeText={setNewPassword} secureTextEntry={showPassword}/>
+                                <Icon name={showPassword ? 'eye' : 'eye-slash'} size={20} style={{position: 'absolute', right: 10}} onPress={()=>setShowPassword(!showPassword)}/>
+                            </View>
                         </InputContainer>
                         <InputContainer style={{marginTop: 16}}>
-                            <InputLabel>Confirmação da nova senha</InputLabel>
-                            <Input onChangeText={setConfirmNewPassword} style={{backgroundColor: '#D6D6D6', width: 300, padding: 8, borderRadius: 10, fontSize: 16}}/>
+                            <InputLabel>Confirmar nova senha</InputLabel>
+                            <View style={{flexDirection:'row', alignItems: 'center'}}>
+                                <Input onChangeText={setConfirmNewPassword} secureTextEntry={showConfirmPassword}/>
+                                <Icon name={showConfirmPassword ? 'eye' : 'eye-slash'} size={20} style={{position: 'absolute', right: 10}} onPress={()=>setShowConfirmPassword(!showConfirmPassword)}/>
+                            </View>
                         </InputContainer>
 
                         <Button onPress={()=>sendConfirmPassword()}>

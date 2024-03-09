@@ -47,6 +47,9 @@ export const Button = styled.TouchableOpacity`
     margin-top: 28px;
     padding: 8px 64px;
     border-radius: 10px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 `;
 
 export const TextButton = styled.Text`

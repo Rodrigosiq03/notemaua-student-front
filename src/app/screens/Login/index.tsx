@@ -7,19 +7,22 @@ import React, { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../contexts/user_context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
+import { ActivityIndicator, Keyboard, TouchableWithoutFeedback, View } from 'react-native';
+import MaskInput from 'react-native-mask-input';
 
 
 export function Login(){
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [showPassword, setShowPassword] = useState(true)
+    const [loading, setLoading] = useState(false)
     const navigation = useNavigation()
-    
+
     const { login, setIsLogged } = useContext(UserContext)
     const navigate = useNavigation()
 
     async function getLogin() {
+        setLoading(true)
         if(email === '' || password === '') {
             Toast.show({
                 type: 'error',
@@ -29,6 +32,7 @@ export function Login(){
                 visibilityTime: 3000,
                 autoHide: true,
             });
+            setLoading(false)
             return;
         }
         await login(`${email}@maua.br`, password)
@@ -43,8 +47,10 @@ export function Login(){
                 autoHide: true,
             });
             setTimeout(() => {
+                setLoading(false)
                 navigate.navigate('withdraw')
             }, 2000);
+
         }else{
             Toast.show({
                 type: 'error',
@@ -54,6 +60,7 @@ export function Login(){
                 visibilityTime: 2000,
                 autoHide: true,
             });
+            setLoading(false)
         }
     }
 
@@ -79,10 +86,12 @@ export function Login(){
                 <Form>
                     <InputContainer>
                         <InputLabel>Ra do aluno</InputLabel>
-                        <Input
-                            style={{backgroundColor: '#D6D6D6', width: 300, padding: 8, borderRadius: 10, fontSize: 16}}
+                        <MaskInput
+                            style={{backgroundColor: '#D6D6D6', width: 300, padding: 8, borderRadius: 10, fontSize: 16, textAlign: 'center'}}
                             value={email}
-                            onChangeText={setEmail}
+                            onChangeText={(masked, unmasked) => {
+                                setEmail(masked);}}
+                                mask={[/\d/, /\d/, '.', /\d/, /\d/, /\d/, /\d/, /\d/, '-', /\d/]}
                         />
                     </InputContainer>
 
@@ -96,7 +105,11 @@ export function Login(){
                 </Form>
                 
                 <Button onPress={()=>getLogin()}>
-                    <TextButton>Entrar</TextButton>
+                    {loading ?
+                        <ActivityIndicator size="large" color="#fff" />
+                        :
+                        <TextButton>Entrar</TextButton>
+                    }
                 </Button>
 
                 <ContainerLinks>
