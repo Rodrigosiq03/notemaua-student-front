@@ -6,7 +6,7 @@ export const Container = styled.View`
   background-color: #fff;
   padding: 16px;
   align-items: center;
-  ${Platform.OS === 'ios' ? 'padding-top: 40px;' : ''}
+  ${Platform.OS === 'ios' ? 'padding-top: 56px;' : ''}
 `;
 
 export const Title = styled.Text`
@@ -40,4 +40,12 @@ export const CardContent = styled.View`
   flex-direction: row;
   align-items: center;
   gap: 8px;
+`;
+
+export const ModalContainer = styled.View`
+  width: 100%;
+  height: 100%;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
 `;

@@ -2,18 +2,23 @@ import Toast from "react-native-toast-message";
 import { Header } from "../../components/Header";
 import { Container, Content, Form, Input, InputContainer, InputLabel, TextButton, Title, Button, ContainerLinks, LinkText } from "./styles";
 import { Footer } from "../../components/Footer";
-import { Link } from "@react-navigation/native";
+import { Link, useNavigation } from "@react-navigation/native";
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useContext, useState } from "react";
 import { UserContext } from "../../contexts/user_context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Keyboard, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
+import { Keyboard, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+import { IconGuideButton } from "../ForgotPassword/styles";
 
-export function ChangePassword({ route, navigation }: any) {
+export function ChangePassword() {
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
+    const [showPassword, setShowPassword] = useState(true)
+    const [showConfirmPassword, setShowConfirmPassword] = useState(true)
+    const [showGuide, setShowGuide] = useState(false)
 
     const { updatePassword, error } = useContext(UserContext)
+    const navigate = useNavigation()
 
     async function PutPassword() {
         if(password === '' || confirmPassword === '') {
@@ -60,7 +65,7 @@ export function ChangePassword({ route, navigation }: any) {
                 autoHide: true,
             });
             setTimeout(() => {
-                navigation.navigate('login')
+                navigate.goBack()
             }, 2000);
             return;
         }
@@ -77,13 +82,34 @@ export function ChangePassword({ route, navigation }: any) {
                 
                 <Form>
                     <InputContainer>
-                        <InputLabel>Nova Senha</InputLabel>
-                        <Input secureTextEntry={true} onChangeText={setPassword}/>
+                        <View style={{flexDirection:'row'}}>
+                            <InputLabel>Nova senha</InputLabel>
+                            <IconGuideButton onPress={()=>setShowGuide(!showGuide)}>
+                                {showGuide ?
+                                <Icon name="times-circle" size={20} color={'#545454'} />
+                                :
+                                <Icon name="question-circle" size={20} color={'#545454'} />
+                            }
+                            </IconGuideButton>
+                        </View>
+                        <View style={{display:`${showGuide ? 'flex' : 'none'}`, backgroundColor:'#1669B6', padding:8, borderRadius:15}}>
+                            <Text style={{fontSize: 16, color: '#fff'}}>Deve conter no mínimo 8 caracteres.</Text>
+                            <Text style={{fontSize: 16, color: '#fff'}}>Deve conter caracter especial.</Text>
+                            <Text style={{fontSize: 16, color: '#fff'}}>Deve conter letra maiúscula.</Text>
+                            <Text style={{fontSize: 16, color: '#fff'}}>Deve conter número.</Text>
+                        </View>
+                        <View style={{flexDirection:'row', alignItems: 'center'}}>
+                            <Input onChangeText={setPassword} secureTextEntry={showPassword}/>
+                            <Icon name={showPassword ? 'eye' : 'eye-slash'} size={20} style={{position: 'absolute', right: 10}} onPress={()=>setShowPassword(!showPassword)}/>
+                        </View>
                     </InputContainer>
 
                     <InputContainer>
                         <InputLabel>Confirmar Senha</InputLabel>
-                        <Input secureTextEntry={true} onChangeText={setConfirmPassword}/>
+                        <View style={{flexDirection:'row', alignItems: 'center'}}>
+                                <Input onChangeText={setConfirmPassword} secureTextEntry={showConfirmPassword}/>
+                                <Icon name={showConfirmPassword ? 'eye' : 'eye-slash'} size={20} style={{position: 'absolute', right: 10}} onPress={()=>setShowConfirmPassword(!showConfirmPassword)}/>
+                            </View>
                     </InputContainer>
                 </Form>
                 
@@ -92,7 +118,7 @@ export function ChangePassword({ route, navigation }: any) {
                 </Button>
 
                 <ContainerLinks>
-                    <TouchableOpacity onPress={()=>navigation.goBack()}>
+                    <TouchableOpacity onPress={()=>navigate.navigate('login')}>
                         <LinkText>Voltar<Icon name="sign-in-alt" size={20} color={'#545454'} /></LinkText>
                     </TouchableOpacity>
                 </ContainerLinks>

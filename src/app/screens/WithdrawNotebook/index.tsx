@@ -1,4 +1,4 @@
-import { Keyboard, Modal, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+import { ActivityIndicator, Keyboard, Modal, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import { Footer } from "../../components/Footer";
 import { Header } from "../../components/Header";
 import { Button, ButtonConfirm, CheckBox, CheckBoxContainer, CheckBoxLabel, Container, Content, Input, InputContainer, InputLabel, Title } from "./styles";
@@ -9,18 +9,29 @@ import { ContainerLinks, LinkText } from "../Login/styles";
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { WithdrawContext } from "../../contexts/withdraw_context";
-import { useFocusEffect } from "@react-navigation/native";
-import { Withdraw } from "../../../@clean/shared/domain/entities/withdraw";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Camera, CameraType } from "expo-camera";
+import { BackContainer, ScannerBar, ScannerContainer } from "../CameraScreen/styles";
 
-export function WithdrawNotebook({ route, navigation }: any) {
+export function WithdrawNotebook() {
+    const [cameraModal, setCameraModal] = useState(false)
+
     const [isChecked, setIsChecked] = useState(false)
     const [serialNumber, setSerialNumber] = useState('')
     const [modal, setModal] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const navigate = useNavigation()
 
     const { createWithdraw } = useContext(WithdrawContext)
-    const { serial } = route.params !== undefined ? route.params : '';
     
+    const handleBarCodeScanned = ({ data }: any) => {
+        setSerialNumber(data)
+        setCameraModal(false)
+    };
+
     async function PostWithdraw() {
+        setLoading(true)
         if(serialNumber === '') {
             Toast.show({
                 type: 'error',
@@ -30,6 +41,7 @@ export function WithdrawNotebook({ route, navigation }: any) {
                 visibilityTime: 3000,
                 autoHide: true,
             });
+            setLoading(false)
             return;
         }
         if(!isChecked) {
@@ -41,6 +53,7 @@ export function WithdrawNotebook({ route, navigation }: any) {
                 visibilityTime: 3000,
                 autoHide: true,
             });
+            setLoading(false)
             return;
         }
         const withdraw = await createWithdraw(serialNumber)
@@ -53,7 +66,8 @@ export function WithdrawNotebook({ route, navigation }: any) {
                 autoHide: true,
             });
             setTimeout(() => {
-                navigation.navigate('withdrawConfirm')
+                setLoading(false)
+                navigate.navigate('withdrawConfirm')
             }, 3000);
         }else{
             Toast.show({
@@ -64,16 +78,17 @@ export function WithdrawNotebook({ route, navigation }: any) {
                 visibilityTime: 3000,
                 autoHide: true,
             });
+            setLoading(false)
         }
     }
 
     async function Logout() {
         await AsyncStorage.removeItem('token')
-        navigation.navigate('login')
+        navigate.navigate('login')
     }
 
     function Verify(){
-        if(AsyncStorage.getItem('token') === null) navigation.navigate('login')
+        if(AsyncStorage.getItem('token') === null) navigate.navigate('login')
     }
 
     useFocusEffect(() => {
@@ -94,22 +109,28 @@ export function WithdrawNotebook({ route, navigation }: any) {
 
                 <InputContainer>
                     <InputLabel>Digite/Escaneie o número de série:</InputLabel>
-                    <Input value={serial} onChangeText={setSerialNumber}/>
+                    <Input value={serialNumber} onChangeText={setSerialNumber}/>
                     
                 </InputContainer>
 
                 <Text style={{ marginTop:16, marginBottom:8 }}>Ou</Text>
                 
-                <Button onPress={()=>navigation.navigate('cameraScreen')}><Icon name="barcode" size={32} color="#fff"/></Button>
+                <Button onPress={()=>setCameraModal(true)}><Icon name="barcode" size={32} color="#fff"/></Button>
 
                 <CheckBoxContainer>
                     <CheckBox onPress={()=>setIsChecked(!isChecked)}>
                         {isChecked ? <Icon name="check" size={16}/> : <Icon name="check" size={16} color="#fff"/>}
                     </CheckBox>
-                    <Text>Concordo com os <CheckBoxLabel onPress={()=>setModal(true)}><Text style={{color: '#1669B6'}}>termos de uso</Text></CheckBoxLabel></Text>
+                    <CheckBoxLabel onPress={()=>setModal(true)}><Text>Concordo com os <Text style={{color: '#1669B6'}}>termos de uso</Text></Text></CheckBoxLabel>
                 </CheckBoxContainer>
 
-                <ButtonConfirm onPress={()=>PostWithdraw()}><Text style={{fontWeight:'bold', color:"#fff", fontSize:16}}>Confirmar</Text></ButtonConfirm>
+                <ButtonConfirm onPress={()=>PostWithdraw()}>
+                {loading ?
+                    <ActivityIndicator size="large" color="#fff" />
+                    :
+                    <Text style={{fontWeight:'bold', color:"#fff", fontSize:16}}>Confirmar</Text>
+                }
+                </ButtonConfirm>
 
                 <ContainerLinks>
                 <TouchableOpacity onPress={()=>Logout()}>
@@ -171,6 +192,25 @@ export function WithdrawNotebook({ route, navigation }: any) {
             :
             <></>
         }
-        </>
+
+        {cameraModal ?
+            <Modal>
+                <SafeAreaView style={{flex:1, justifyContent:'center'}}>
+                    <Camera style={{flex:1, justifyContent: 'center', alignItems: 'center'}} type={CameraType.back} onBarCodeScanned={handleBarCodeScanned}>
+                        <BackContainer>
+                            <TouchableOpacity onPress={() => setCameraModal(false)} style={{padding: 20}}>
+                                <Text style={{color: '#fff', fontSize: 20}}><Icon name="arrow-right" size={20}/></Text>
+                            </TouchableOpacity>
+                        </BackContainer>
+                        <ScannerContainer>
+                            <ScannerBar/>
+                        </ScannerContainer>
+                    </Camera>
+                </SafeAreaView>
+            </Modal>    
+        :
+        <></>    
+        }
+    </>
     )
 }

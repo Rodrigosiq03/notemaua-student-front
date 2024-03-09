@@ -57,7 +57,7 @@ export class UserRepositoryHttp implements IUserRepository {
     try {
       const response = await this.httpUser.post<ForgotPasswordResponse>('/forgot-password', { email })
       if (response.status === 200) {
-        // localStorage.setItem('createdAt', JSON.stringify(new Date().getTime()))
+        await AsyncStorage.setItem('createdAt', JSON.stringify(new Date().getTime()))
 
         return response.data.message
       }
@@ -66,11 +66,14 @@ export class UserRepositoryHttp implements IUserRepository {
       throw new Error(error)
     }
   }
-  async confirmForgotPassword(email: string, password: string, createdAt: Date): Promise<string> {
+  async confirmForgotPassword(email: string, password: string): Promise<string> {
     try {
-      // const createdAt = Number(JSON.parse(localStorage.getItem('createdAt') || ''))
-      
-      if (Number(createdAt) < 0) throw new EntityError('createdAt')
+      const createdAtAS = await AsyncStorage.getItem('createdAt')
+      const createdAt = createdAtAS ? Number(JSON.parse(createdAtAS)) : -1
+      const timeNow = new Date().getTime()
+      if (timeNow - createdAt > 1000 * 60 * 60) {
+        throw new Error('Expired time')
+      }
 
       const response = await this.httpUser.post<ConfirmForgotPasswordResponse>('/confirm-forgot-password', { email, password, createdAt })
       if (response.status === 200) {

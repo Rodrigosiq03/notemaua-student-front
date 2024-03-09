@@ -1,3 +1,4 @@
+import { Platform } from "react-native";
 import styled from "styled-components/native";
 
 export const Container = styled.View`
@@ -71,3 +72,20 @@ export const Paragraph = styled.Text`
     text-align: center;
     margin-bottom: 20px;
 `;
+
+
+export const ModalView = styled.View`
+    padding: 24px;
+    flex-direction: row;
+    justify-content: flex-end;
+    ${Platform.OS === 'ios' ? 'padding-top: 56px;' : ''}
+`
+export const IconGuideButton = styled.TouchableOpacity`
+    padding: 8px;
+    border-radius: 50px;
+    margin-right: 16px;
+    transition: background-color 0.2s;
+    &:focus{
+        background-color: #999999;
+    }
+`
