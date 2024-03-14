@@ -88,6 +88,11 @@ export function WithdrawNotebook() {
     }
 
     function Verify(){
+        const timeLogin = AsyncStorage.getItem('timeLogin') as unknown as number
+        const timeNow = new Date().getTime()
+        if(timeNow - timeLogin > (7*24*60*60*1000)) {
+            Logout()
+        }
         if(AsyncStorage.getItem('token') === null) navigate.navigate('login')
     }
 

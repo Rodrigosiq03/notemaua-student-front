@@ -1,6 +1,6 @@
 import { Header } from "../../components/Header";
 import { Button, Container, ContainerLinks, Content, Form, IconGuideButton, Input, InputContainer, InputLabel, LinkText, ModalView, Paragraph, TextButton, Title } from "./styles";
-import { Link } from "@react-navigation/native";
+import { Link, useNavigation } from "@react-navigation/native";
 import { Footer } from "../../components/Footer";
 import { useContext, useState } from "react";
 import Toast from "react-native-toast-message";
@@ -21,6 +21,8 @@ export function ForgotPassword() {
     const [showGuide, setShowGuide] = useState(false)
     const [showPassword, setShowPassword] = useState(true)
     const [showConfirmPassword, setShowConfirmPassword] = useState(true)
+
+    const navigate = useNavigation()
 
     async function sendEmail() {
         if(email === '') {
@@ -104,7 +106,7 @@ export function ForgotPassword() {
             });
             return;
         }
-        const message = await confirmForgotPassword(email, newPassword)
+        const message = await confirmForgotPassword(`${email}@maua.br`, newPassword)
         if (error === 'Expired time') {
             Toast.show({
                 type: 'error',
@@ -126,6 +128,17 @@ export function ForgotPassword() {
             });
             return;
         }
+        Toast.show({
+            type: 'success',
+            position: 'top',
+            text1: 'Senha alterada com sucesso!',
+            visibilityTime: 2000,
+            autoHide: true,
+        })
+        setTimeout(()=> {
+            setModal(false)
+            navigate.navigate('login')
+        }, 2000)
     }
 
     return (
