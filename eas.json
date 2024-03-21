@@ -11,6 +11,11 @@
       "distribution": "internal",
       "android": {
         "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_STAGE": "DEV",
+        "EXPO_PUBLIC_API_AUTH": "https://7qz1cfgz7k.execute-api.sa-east-1.amazonaws.com/prod/mss-auth",
+        "EXPO_PUBLIC_API_WITHDRAW": "https://ciior32q31.execute-api.sa-east-1.amazonaws.com/prod/mss-withdraw"
       }
     },
     "production": {}
