@@ -45,6 +45,7 @@ export class UserRepositoryHttp implements IUserRepository {
   async login(email: string, password: string): Promise<string> {
     try {
       const response = await this.httpUser.post<LoginResponse>('/login', { email, password })
+      await AsyncStorage.setItem('timeLogin', JSON.stringify(new Date().getTime()))
       if (response.status === 200) {
         return response.data.token
       }
@@ -57,7 +58,9 @@ export class UserRepositoryHttp implements IUserRepository {
     try {
       const response = await this.httpUser.post<ForgotPasswordResponse>('/forgot-password', { email })
       if (response.status === 200) {
-        await AsyncStorage.setItem('createdAt', JSON.stringify(new Date().getTime()))
+
+        const timeNow = new Date().getTime()
+        await AsyncStorage.setItem('createdAt', JSON.stringify(timeNow))
 
         return response.data.message
       }
@@ -77,6 +80,7 @@ export class UserRepositoryHttp implements IUserRepository {
 
       const response = await this.httpUser.post<ConfirmForgotPasswordResponse>('/confirm-forgot-password', { email, password, createdAt })
       if (response.status === 200) {
+        // console.log(response.data.message)
         return response.data.message
       }
       return ''
