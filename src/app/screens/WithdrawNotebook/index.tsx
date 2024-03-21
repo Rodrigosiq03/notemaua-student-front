@@ -1,9 +1,9 @@
-import { ActivityIndicator, Keyboard, Modal, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+import { ActivityIndicator, Keyboard, Modal, Platform, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import { Footer } from "../../components/Footer";
 import { Header } from "../../components/Header";
 import { Button, ButtonConfirm, CheckBox, CheckBoxContainer, CheckBoxLabel, Container, Content, Input, InputContainer, InputLabel, Title } from "./styles";
 import Icon from "react-native-vector-icons/FontAwesome5";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ContainerLinks, LinkText } from "../Login/styles";
 
 import Toast from "react-native-toast-message";
@@ -23,7 +23,7 @@ export function WithdrawNotebook() {
     const [loading, setLoading] = useState(false)
     const navigate = useNavigation()
 
-    const { createWithdraw } = useContext(WithdrawContext)
+    const { createWithdraw, error } = useContext(WithdrawContext)
     
     const handleBarCodeScanned = ({ data }: any) => {
         setSerialNumber(data)
@@ -70,15 +70,18 @@ export function WithdrawNotebook() {
                 navigate.navigate('withdrawConfirm')
             }, 3000);
         }else{
+            setTimeout(() => {
+                setLoading(false)
+            }, 3000);
+            console.log('chegou no caso de erro: ', error?.message)
             Toast.show({
                 type: 'error',
                 position: 'top',
-                text1: 'Erro ao efetuar retirada',
+                text1: error?.message || 'Erro ao efetuar retirada',
                 text2: 'Tente novamente',
                 visibilityTime: 3000,
                 autoHide: true,
             });
-            setLoading(false)
         }
     }
 
@@ -144,7 +147,7 @@ export function WithdrawNotebook() {
         </TouchableWithoutFeedback>
         {modal ?
             <Modal>
-                <View style={{padding: 16}}>
+                <View style={Platform.OS === 'ios' ? {padding: 16, marginTop: '10%'}:{padding: 16, }}>
                     <View>
                         <TouchableOpacity onPress={()=>setModal(false)}><Text style={{fontSize:24}}>X</Text></TouchableOpacity>
                     </View>
