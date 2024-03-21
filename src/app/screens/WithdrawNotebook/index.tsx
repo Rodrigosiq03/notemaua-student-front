@@ -157,7 +157,7 @@ export function WithdrawNotebook() {
                         <TouchableOpacity onPress={()=>setModal(false)}><Text style={{fontSize:24}}>X</Text></TouchableOpacity>
                     </View>
                     <View style={{marginTop:16}}>
-                        <Text style={{fontWeight:'700', marginBottom:16, textAlign:"center"}}>Termos de uso do MauaNote</Text>
+                        <Text style={{fontWeight:'700', marginBottom:16, textAlign:"center"}}>Termos de uso do Notemaua</Text>
                     </View>
                     <Text style={{marginBottom:16, marginTop:16}}>
                         Declaro que estou ciente de que Centro Universitário do Instituto Mauá
