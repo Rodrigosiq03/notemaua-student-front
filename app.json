@@ -1,38 +1,47 @@
 {
   "expo": {
-    "name": "MauaNote",
+    "name": "notemaua",
     "slug": "notemaua",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "scheme": "myapp",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.titans08.mauanoteapp"
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      },
-      "package": "com.titans08.mauanoteapp"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "855e5bd3-3962-4375-9891-36faae73ab32"
       }
     },
-    "owner": "rodbeatz"
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Notemaua to access your camera"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
   }
 }
