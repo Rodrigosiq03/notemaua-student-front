@@ -7,10 +7,8 @@ import { useContext, useState } from "react";
 import { UserContext } from "@/contexts/user_context";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
-import { Button, ContainerLinks, Content, Form, Input, InputContainer, InputLabel, LinkText, TextButton } from "../../change_password/styles";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { IconGuideButton } from "../../forgot_password/styles";
 
 export default function ConfigScreen() {
     const [openModal, setOpenModal] = useState(false)

@@ -10,9 +10,7 @@ export default function RootLayout() {
           headerShown: false,
         }}>
           <Stack.Screen name="index" />
-          <Stack.Screen name="first_access/index" />
           <Stack.Screen name="forgot_password/index" />
-          <Stack.Screen name="change_password/index" />
           <Stack.Screen name="withdraw_confirm/index" />
           {/* <Stack.Screen name="camera_screen/index" /> */}
           <Stack.Screen name="(tabs)" />

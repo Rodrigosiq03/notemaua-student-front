@@ -98,7 +98,7 @@ export default function WithdrawNotebook() {
         if(timeNow - timeLogin > (7*24*60*60*1000)) {
             Logout()
         }
-        if(AsyncStorage.getItem('token') === null) router.navigate('/')
+        // if(AsyncStorage.getItem('token') === null) router.navigate('/')
     }
 
     useFocusEffect(() => {
