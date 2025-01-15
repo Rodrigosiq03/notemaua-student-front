@@ -6,6 +6,10 @@ type LoginResponse = {
   message: string
 }
 
+type OAuthResponse = {
+  token: string
+}
+
 type ForgotPasswordResponse = {
   message: string
 }
@@ -43,13 +47,25 @@ export class UserRepositoryHttp {
       const response = await this.httpUser.post<LoginResponse>('/login', { email, password })
       await AsyncStorage.setItem('timeLogin', JSON.stringify(new Date().getTime()))
       if (response.status === 200) {
+          return response.data.token
+        }
+        return ''
+    } catch (error: any) {
+        throw new Error(error)
+    }
+  }
+  async oauthLogin(authCode: string): Promise<string | undefined> {
+    try {
+      const response = await this.httpUser.post<OAuthResponse>('/oauth-user', {token: authCode})
+      await AsyncStorage.setItem('timeLogin', JSON.stringify(new Date().getTime()))
+      if (response.status === 200) {
         return response.data.token
       }
-      return ''
     } catch (error: any) {
       throw new Error(error)
     }
   }
+    
   async forgotPassword(email: string): Promise<string> {
     try {
       const response = await this.httpUser.post<ForgotPasswordResponse>('/forgot-password', { email })

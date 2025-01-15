@@ -8,6 +8,7 @@ import { httpUser } from "@/api/http";
 
 export type UserContextType = {
   login(email: string, password: string): Promise<string | undefined>
+  oauthLogin(authCode: string): Promise<string | undefined>
   forgotPassword: (email: string) => Promise<string | undefined>
   confirmForgotPassword: (email: string, newPassword: string) => Promise<string | undefined>
   firstAccess: (ra: string) => Promise<string | undefined>
@@ -21,6 +22,7 @@ export type UserContextType = {
 
 const defaultUserContext: UserContextType = {
   login: async (email: string, password: string) => '',
+  oauthLogin: async (authCode: string) => '',
   forgotPassword: async (email: string) => '',
   confirmForgotPassword: async (email: string, newPassword: string) => '',
   firstAccess: async (ra: string) => '',
@@ -38,6 +40,20 @@ export function UserContextProvider({ children }: PropsWithChildren) {
   const [isLogged, setIsLogged] = useState(false)
   const [error, setError] = useState('')
   const repo = new UserRepositoryHttp(httpUser)
+
+  async function oauthLogin(authCode: string) {
+    try {
+      const token = await repo.oauthLogin(authCode)
+      if (!token) {
+        return // ALTERAR POR FAVOR!!!!!!!!!!!!!!!!!
+      }
+      AsyncStorage.setItem('token', token)
+
+      return token
+    } catch (error: any) {
+      console.error('Something went wrong with oauthLogin: ',error)
+    }
+  }
 
   async function login(email: string, password: string) {
     try {
@@ -119,6 +135,7 @@ export function UserContextProvider({ children }: PropsWithChildren) {
 
   return (
     <UserContext.Provider value={{ 
+      oauthLogin,
       login, 
       forgotPassword, 
       confirmForgotPassword, 
