@@ -56,7 +56,7 @@ export class UserRepositoryHttp {
   }
   async oauthLogin(authCode: string): Promise<string | undefined> {
     try {
-      const response = await this.httpUser.post<OAuthResponse>('/oauth-user', {token: authCode})
+      const response = await this.httpUser.post<OAuthResponse>('/oauth-user', {authCode})
       await AsyncStorage.setItem('timeLogin', JSON.stringify(new Date().getTime()))
       if (response.status === 200) {
         return response.data.token
