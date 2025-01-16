@@ -7,7 +7,7 @@ import Toast from 'react-native-toast-message';
 import React, { useContext, useEffect, useState } from 'react';
 import { UserContext } from '@/contexts/user_context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ActivityIndicator, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { ActivityIndicator, Keyboard, Platform, TouchableWithoutFeedback } from 'react-native';
 import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
 
@@ -27,7 +27,7 @@ export default function Index() {
         {
             clientId: process.env.EXPO_PUBLIC_AZURE_CLIENT_ID!,
             scopes: ['openid', 'profile', 'email', 'offline_access', 'User.Read'],
-            redirectUri: process.env.EXPO_PUBLIC_AZURE_REDIRECT_URI!,
+            redirectUri: Platform.OS === 'ios' ?  process.env.EXPO_PUBLIC_AZURE_REDIRECT_URI! : process.env.EXPO_PUBLIC_AZURE_REDIRECT_URI_ANDROID!,
             usePKCE: true
         },
         discovery
@@ -40,9 +40,11 @@ export default function Index() {
                 try {
                     const { code } = response.params;
 
+
+
                     const token = await oauthLogin(code);
 
-                    // console.log('Code:', code);
+                    console.log('Code:', code);
 
                     // console.log(process.env.EXPO_PUBLIC_AZURE_CLIENT_ID);
                     // console.log(process.env.EXPO_PUBLIC_AZURE_CLIENT_SECRET);
