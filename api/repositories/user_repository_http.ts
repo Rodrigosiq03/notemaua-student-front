@@ -8,6 +8,11 @@ type LoginResponse = {
 
 type OAuthResponse = {
   token: string
+  created_user: {
+    ra: string
+    name: string
+    email: string
+  }
 }
 
 type ForgotPasswordResponse = {
@@ -27,8 +32,7 @@ type UpdatePasswordResponse = {
 }
 
 type DeleteUserResponse = {
-  ra: string
-  message: string
+  isUserDeleted: boolean
 }
 
 type GetUserResponse = {
@@ -54,14 +58,21 @@ export class UserRepositoryHttp {
         throw new Error(error)
     }
   }
-  async oauthLogin(authCode: string): Promise<string | undefined> {
+  async oauthLogin(authCode: string, codeVerifier: string): Promise<string | undefined | { token: string, ra: string }> {
     try {
-      const response = await this.httpUser.post<OAuthResponse>('/oauth-user', {authCode})
+      const response = await this.httpUser.post<OAuthResponse>('/oauth-user', {authCode, codeVerifier, redirectUri: process.env.EXPO_PUBLIC_AZURE_REDIRECT_URI})
       await AsyncStorage.setItem('timeLogin', JSON.stringify(new Date().getTime()))
+      console.log(response)
       if (response.status === 200) {
+        console.log(response.data)
         return response.data.token
       }
+      if (response.status === 201) {
+        return { token: response.data.token, ra: response.data.created_user.ra }
+      }
     } catch (error: any) {
+      console.log(error)
+      console.log(error.response.data)
       throw new Error(error)
     }
   }
@@ -100,49 +111,28 @@ export class UserRepositoryHttp {
       throw new Error(error)
     }
   }
-  async updatePassword(ra: string, password: string): Promise<string> {
+  async deleteUser(token: string): Promise<boolean> {
     try {
-      const token = await AsyncStorage.getItem('token')
-      const response = await this.httpUser.put<UpdatePasswordResponse>('/update-user?ra='+ra, { password },
-      {
+      console.log(token)
+      const response = await this.httpUser.delete<DeleteUserResponse>('/delete-user', {
         headers: {
           Authorization: `Bearer ${token}`
         }
       })
+      console.log(response.data)
       if (response.status === 200) {
-        return response.data.message
+        return response.data.isUserDeleted
       }
-      return ''
+      return false
     } catch (error: any) {
+      console.log(error)
       throw new Error(error)
     }
   }
-  async deleteUser(ra: string): Promise<string> {
-    try {
-      const response = await this.httpUser.delete<DeleteUserResponse>('/delete-user', { data: { ra } })
-      if (response.status === 200) {
-        return response.data.message
-      }
-      return ''
-    } catch (error: any) {
-      throw new Error(error)
-    }
-  }
-  async firstAccess(ra: string): Promise<string> {
-    try {
-      const response = await this.httpUser.post<string>('/first-access', { ra })
-      if (response.status === 200) {
-        return response.data
-      }
-      return ''
-    } catch (error: any) {
-      throw new Error(error)
-    }
-  }
-  async getUser(ra: string) {
+  async getUser() {
     try {
       const token = await AsyncStorage.getItem('token')
-      const response = await this.httpUser.get<GetUserResponse>(`/get-user?ra=${ra}`, {
+      const response = await this.httpUser.get<GetUserResponse>(`/get-user`, {
         headers: {
           Authorization: `Bearer ${token}`
         }

@@ -10,7 +10,8 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.notemaua.app"
+      "bundleIdentifier": "com.notemaua.app",
+      "buildNumber": "1"
     },
     "android": {
       "adaptiveIcon": {
@@ -21,7 +22,7 @@
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
-      ]
+      ],
     },
     "web": {
       "bundler": "metro",

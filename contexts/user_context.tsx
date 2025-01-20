@@ -7,31 +7,21 @@ import { httpUser } from "@/api/http";
 
 
 export type UserContextType = {
-  login(email: string, password: string): Promise<string | undefined>
-  oauthLogin(authCode: string): Promise<string | undefined>
-  forgotPassword: (email: string) => Promise<string | undefined>
-  confirmForgotPassword: (email: string, newPassword: string) => Promise<string | undefined>
-  firstAccess: (ra: string) => Promise<string | undefined>
-  updatePassword: (ra: string, newPassword: string) => Promise<string | undefined>
-  deleteUser: (ra: string) => Promise<string | undefined>
+  oauthLogin(authCode: string, codeVerifier: string): Promise<string | undefined | { token: string, ra: string }>
+  deleteUser: () => Promise<boolean | undefined>
   isLogged: boolean
   setIsLogged: (isLogged: boolean) => void
   error: string | undefined
-  getUser: () => Promise<object | undefined>
+  getUser: () => Promise<Object | undefined>
 }
 
 const defaultUserContext: UserContextType = {
-  login: async (email: string, password: string) => '',
-  oauthLogin: async (authCode: string) => '',
-  forgotPassword: async (email: string) => '',
-  confirmForgotPassword: async (email: string, newPassword: string) => '',
-  firstAccess: async (ra: string) => '',
-  updatePassword: async (ra: string, newPassword: string) => '',
-  deleteUser: async (ra: string) => '',
+  oauthLogin: async (authCode: string, codeVerifier: string) => '',
+  deleteUser: async () => undefined,
+  getUser: async () => undefined,
   isLogged: false,
   setIsLogged: (value: boolean) => {},
   error: undefined,
-  getUser: async () => undefined
 }
 
 export const UserContext = createContext(defaultUserContext)
@@ -41,78 +31,32 @@ export function UserContextProvider({ children }: PropsWithChildren) {
   const [error, setError] = useState('')
   const repo = new UserRepositoryHttp(httpUser)
 
-  async function oauthLogin(authCode: string) {
+  async function oauthLogin(authCode: string, codeVerifier: string) {
     try {
-      const token = await repo.oauthLogin(authCode)
+      const token = await repo.oauthLogin(authCode, codeVerifier)
       if (!token) {
-        return // ALTERAR POR FAVOR!!!!!!!!!!!!!!!!!
+        throw new Error('Token not found')
       }
-      AsyncStorage.setItem('token', token)
+      if (typeof token === 'string') {
+        AsyncStorage.setItem('token', token)
+      }
+      if (typeof token === 'object') {
+        AsyncStorage.setItem('token', token.token)
+        AsyncStorage.setItem('studentRA', token.ra)
+      }
 
       return token
     } catch (error: any) {
       console.error('Something went wrong with oauthLogin: ',error)
+      throw new Error(error)
     }
   }
 
-  async function login(email: string, password: string) {
+  async function deleteUser() {
     try {
-      const token = await repo.login(email, password)
-      AsyncStorage.setItem('studentRA', email.split('@')[0])
-      AsyncStorage.setItem('token', token)
-
-      return token
-    } catch (error: any) {
-      console.error('Something went wrong with login: ',error)
-    }
-  }
-
-  async function forgotPassword(email: string) {
-    try {
-      const message = await repo.forgotPassword(email)
-
-      setError(message)
-      return message
-    } catch (error: any) {
-      console.error('Something went wrong with forgotPassword: ',error)
-    }
-  }
-
-  async function confirmForgotPassword(email: string, newPassword: string) {
-    try {
-      const message = await repo.confirmForgotPassword(email, newPassword)
-      
-      return message
-    } catch (error: any) {
-      setError(error.message)
-      console.error('Something went wrong with confirmForgotPassword: ',error)
-    }
-  }
-
-  async function firstAccess(ra: string) {
-    try {
-      const message = await repo.firstAccess(ra)
-      return message
-    } catch (error: any) {
-      console.error('Something went wrong with firstAccess: ',error)
-    }
-  }
-
-  async function updatePassword(ra: string, newPassword: string) {
-    try {
-      const message = await repo.updatePassword(ra, newPassword)
-
-      return message
-    } catch (error: any) {
-      console.error('Something went wrong with updatePassword: ',error)
-    }
-  }
-
-  async function deleteUser(ra: string) {
-    try {
-      const ra = await AsyncStorage.getItem('studentRA')
-      if(ra){
-        const message = await repo.deleteUser(ra)
+      const token = await AsyncStorage.getItem('token')
+      if(token){
+        const message = await repo.deleteUser(token)
         return message
       }
     } catch (error: any) {
@@ -122,12 +66,8 @@ export function UserContextProvider({ children }: PropsWithChildren) {
 
   async function getUser() {
     try {
-      const ra = await AsyncStorage.getItem('studentRA')
-      
-      if (ra) {
-        const user = await repo.getUser(ra)
-        return user
-      }
+      const user = await repo.getUser()
+      return user
     } catch (error: any) {
       console.error('Something went wrong with getUser: ',error)
     }
@@ -136,11 +76,6 @@ export function UserContextProvider({ children }: PropsWithChildren) {
   return (
     <UserContext.Provider value={{ 
       oauthLogin,
-      login, 
-      forgotPassword, 
-      confirmForgotPassword, 
-      firstAccess, 
-      updatePassword, 
       deleteUser, 
       isLogged, 
       setIsLogged, 
